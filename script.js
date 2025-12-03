@@ -262,7 +262,6 @@ setTimeout(() => {
   // let tile = svgCanvas.querySelector(`.tile[data-x="${centerNode.x}"][data-y="${centerNode.y}"]`);
   // tile.dataset.active = true
   
-  console.warn('tileLayer', tileLayer)
   lastX = +tileLayer.lastElementChild.dataset.x;
   lastY = +tileLayer.lastElementChild.dataset.y;
   

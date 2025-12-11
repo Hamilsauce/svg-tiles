@@ -2,7 +2,7 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 import { createCustomEvent } from '../lib/create-event.js';
 import { CanvasObject, DefaultCanvasObjectOptions } from './CanvasObject.js';
 
-const { getPanZoom, addPanAction, template, utils, download, TwoWayMap } = ham;
+const { getPanZoom, template, utils, download, TwoWayMap } = ham;
 
 const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, interval, of, fromEvent, merge, empty, delay, from } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
@@ -46,8 +46,6 @@ export class SVGCanvas extends EventTarget {
     
     const { width: mmWidth, height: mmHeight } = this.minimap.getBoundingClientRect()
     
-    // this.minimap.setAttribute('transform', `translate(${this.bounds.right - 0}, ${this.bounds.bottom - 1})`)
-    
     this.clickDOM$ = fromEvent(this.#self, 'click').pipe(
       tap(e => {
         e.preventDefault();
@@ -60,49 +58,17 @@ export class SVGCanvas extends EventTarget {
       const matrix = vpTransform.getItem(0).matrix;
       const transformFromMatrix = vpTransform.createSVGTransformFromMatrix(matrix)
       
-      // const minimapVPTransform = this.minimapViewport.transform.baseVal
-      
-      // const mmvpMatrix = minimapVPTransform.getItem(0).matrix;
-      // const transformFromMMVPMatrix = vpTransform.createSVGTransformFromMatrix(mmvpMatrix)
-      
       const minimapBB = this.minimap.getBoundingClientRect();
       const mmBB = {
         left: minimapBB.x,
         top: minimapBB.y,
-        // width: minimapBB.width,
-        // height: minimapBB.height,
         right: minimapBB.x + minimapBB.width,
         bottom: minimapBB.y + minimapBB.height,
       }
       
-      // const mmvpBB = {
-      //   left: minimapViewportBB.x,
-      //   top: minimapViewportBB.y,
-      //   // width: minimapViewportBB.width,
-      //   // height: minimapViewportBB.height,
-      //   right: minimapViewportBB.x + minimapViewportBB.width,
-      //   bottom: minimapViewportBB.y + minimapViewportBB.height,
-      
-      // }
-      
-      // console.table({ mmBB, mmvpBB })
-      
-      // const isVPRectInMinimap =
-      //   mmvpBB.left >= mmBB.left &&
-      //   mmvpBB.top >= mmBB.top &&
-      //   mmvpBB.right <= mmBB.right &&
-      //   mmvpBB.bottom <= mmBB.bottom;
-      
-      
-      // if (isVPRectInMinimap) {
-      //   minimapVPTransform.initialize(transformFromMatrix)
-      // }
-      // else {
-      //   minimapVPTransform.initialize(transformFromMatrix); // transformFromMMVPMatrix)
-      // }
-    }), );
-    this.pointerMove$.subscribe()
+    }));
     
+    this.pointerMove$.subscribe()
     
     this.eventEmits$ = this.clickDOM$
       .pipe(
@@ -150,8 +116,6 @@ export class SVGCanvas extends EventTarget {
   get parentElement() { return this.#self.parentElement }
   
   get viewBox() { return this.#self.viewBox.baseVal }
-  
-  // get viewport() { return this.dom.getBoundingClientRect(); }
   
   useTemplate(templateName, options = {}) {
     const el = this.#self.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
@@ -247,25 +211,11 @@ export class SVGCanvas extends EventTarget {
     return this;
   }
   
-  // panViewport({ x, y }) {
-  //   Object.assign(this.viewBox, { x, y });
-  // }
-  
   setViewBox({ x = 0, y = 0, width = 100, height = 100 }) {
     Object.assign(this.viewBox, { x, y, width, height, });
     
     setTimeout(() => {
       const tileBB = this.layers.tile.getBBox()
-      // const w = this.layers.tile.dataset
-      // const h = this.layers.tile.dataset.height
-      
-      // this.surface.width.baseVal.value = (tileBB.width + 1) / 10
-      // this.surface.height.baseVal.value = (tileBB.height + 1) / 10
-      
-      // this.surface.setAttribute('transform', `translate(0,0) rotate(0) scale(${tileBB.width/10},${tileBB.height/15})`);
-      // this.surface.setAttribute('width', +width)
-      // this.surface.setAttribute('height', +height)
-      // this.surface.style.height = height
     }, 0);
     
     return this;

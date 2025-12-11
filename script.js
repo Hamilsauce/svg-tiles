@@ -1,26 +1,10 @@
-// import { Graph, TILE_TYPE_INDEX } from './lib/store.js';
-// import { SVGCanvas } from './canvas/SVGCanvas.js';
-// import { maps } from './maps.js';
-// import { copyTextToClipboard, dispatchPointerEvent } from './lib/utils.js';
-// import { getTileSelector } from '../selection-box/SelectionBox.js';
-// import { Drawer } from './ui/Drawer.js';
-// import { initMapControls } from './ui/map-selection.js';
-// import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
-// import { TransformList } from './canvas/TransformList.js';
-// import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
-
 import { Graph, TILE_TYPE_INDEX } from './lib/store.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { maps } from './maps.js';
-// import { copyTextToClipboard, dispatchPointerEvent } from './lib/utils.js';
 import { getTileSelector } from './selection-box/SelectionBox.js';
-
-// import { Drawer } from './ui/Drawer.js';
 import { initMapControls } from './ui/map-selection.js';
 import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';
-// import { addDragAction } from '../modules/drag-stream.js';
-
 
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 
@@ -128,8 +112,7 @@ let selectedRange = [];
 const audioNote1 = (new AudioNote(audioEngine));
 
 const graph = new Graph();
-console.warn('graph', graph)
-// await sleep(500)
+
 const app = document.querySelector('#app');
 const appBody = app.querySelector('#app-body');
 const floatingMenu = app.querySelector('#app-floating-menu');
@@ -179,9 +162,6 @@ const actor2 = useTemplate('actor', {
 
 const actor2TransformList = new TransformList(svgCanvas, actor2)
 
-// addDragAction(floatingMenu, (e) => {
-//   console.warn({...e})
-// })
 initMapControls(graph, svgCanvas, actor1);
 
 actor2.setAttribute('transform', 'translate(12,21) rotate(0) scale(1)');
@@ -386,11 +366,6 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
         
         actorTrans = activeActor === actor1 ? actor1TransformList : actor2TransformList
         actorTrans.translateTo(curr.x, curr.y)
-        
-        // svgCanvas.panViewport({
-        //   x: (curr.x - (svgCanvas.viewBox.width / 2)) * 0.025,
-        //   y: (curr.y - (svgCanvas.viewBox.height / 2)) * 0.025,
-        // });
         
         if (el === startNodeEl) {
           startNodeEl.dataset.current = false;

@@ -32,17 +32,6 @@ export const AppFloatingMenu = defineComponent(
           y = bounds.value.y - 25
         }
         
-        // if (x > 0) {
-        //   x =
-        // }
-        // if (y > 0) {
-        //   y =
-        // }
-        
-        // if (y > bounds.value.y) {
-        //   y = bounds.value.y
-        // }
-        
         floatingMenuRef.value.style.top = `${y-25}px`;
         floatingMenuRef.value.style.left = `${x-25}px`;
       };

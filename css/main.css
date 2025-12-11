@@ -39,25 +39,16 @@ body {
 }
 
 #canvas {
-  /* background: #527AC9; */
-  /* background: #176795; */
-  /* filter: brightness(1.5); */
   width: 100%;
   height: 100%;
-  /* min-width: 100vw; */
-  /* min-height: 100vh; */
   touch-action: none;
-*{
-  /* touch-action: none; */
-
-}
-}
+  }
 
 #surface {
   fill: transparent;
   stroke: #FFFFFF80;
   stroke-width: 0.2;
-  filter:   drop-shadow(0 0px 1.5px #2F2F2F65);
+  filter: drop-shadow(0 0px 1.5px #2F2F2F65);
 }
 
 #context-menu[data-show=false] {
@@ -74,7 +65,7 @@ body {
   flex-direction: column;
   gap: 2px;
   height: 100%;
-
+  
 }
 
 #context-menu .context-menu-list {
@@ -106,26 +97,6 @@ body {
   white-space: nowrap;
 }
 
-/* .context-menu-list.secondary {
-  display: none;
-  height: 0;
-} */
-
-/* .context-menu[data-show=true][data-show-actions=false] .context-menu-list.secondary {
-  display: none;
-  height: 0;
-} */
-
-/* .context-menu[data-show=true][data-show-actions=true] .context-menu-list.secondary {
-  display: none;
-  height: 100%;
-  
-} */
-
-/* .context-menu-list.secondary li {
-  background: #E4E4E4;
-  background: #D0EBAC;
-} */
 .edge-line>line {
   stroke: #0006FF;
   stroke-width: 0.1;

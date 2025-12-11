@@ -1,4 +1,6 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
+import { dispatchPointerEvent } from '../lib/utils.js';
+
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { template, utils } = ham;
 
@@ -123,7 +125,7 @@ export class TileSelector extends EventEmitter {
     // this.#selectionBox.setAttribute('classList', 'green');
     this.#selectionBox.classList.add('selection-box')
     this.#selectionBox.setAttribute('fill', '#24D1783B');
-    this.#selectionBox.style.fill='#24D1783B'
+    this.#selectionBox.style.fill = '#24D1783B'
     
     this.#self.append(this.#selectionBox);
     
@@ -157,8 +159,10 @@ export class TileSelector extends EventEmitter {
     });
     
     this.updateSelection();
-    
+    this.#handles.end.focus()
     this.emitRange();
+    
+    dispatchPointerEvent(this.#handles.end, 'pointerdown')
   }
   
   remove() {
@@ -180,8 +184,6 @@ export class TileSelector extends EventEmitter {
     if (!this.endPoint || this.endPoint.x === null) {
       this.setEndPoint({ x: x + this.#unitSize, y: y + this.#unitSize });
     }
-    
-    // this.emitRange()
     
     return this;
   }

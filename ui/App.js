@@ -1,15 +1,11 @@
 import { ref, computed, watch, reactive } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
-// import { savedProjects ,tripleProjects} from '../data/projects.js';
-// import { Drawer } from './Drawer.js';
 
 import { AppHeader } from './app-shell/AppHeader.js';
 import { AppBody } from './app-shell/AppBody.js';
 import { AppFooter } from './app-shell/AppFooter.js';
 import { AppFloatingMenu } from './AppFloatingMenu.js';
 
-
-// import { ListItem } from './ListItem.js';
 const t = getTemplate('app');
 
 export const App = defineComponent(
@@ -18,7 +14,7 @@ export const App = defineComponent(
     const footerDisplayState = ref('toolbar');
     
     const footerDisplay = computed(() => footerDisplayState.value);
-    // const showToolbar = computed(() => footerDisplay.value === 'toolbar');
+
     const handleFooterChange = (e) => {
       footerDisplayState.value = e
     };

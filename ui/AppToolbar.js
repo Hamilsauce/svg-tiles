@@ -1,14 +1,29 @@
-import { ref, watch } from 'vue'
+import { ref, computed, watch, defineProps } from 'vue'
 import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
+// import { AppToolbar } from '../AppToolbar.js';
 
 export const AppToolbar = defineComponent(
-  (props) => {
-    const count = ref(0);
-    console.warn('TOOL BAR SETUP', count.value)
-
-    watch(count, () => {
-      console.warn('count', count.value)
+  getTemplate('app-toolbar'),
+  (props, ctx) => {
+    
+    // const emit = defineEmit(['toggle-running-click'])
+    const isRunning = computed(() => props.isRunning)
+    console.warn('isRunning', isRunning.value)
+    
+    watch(isRunning, (value) => {
+      console.warn('isRunning', isRunning.value)
     })
-    return { count }
-  }, {},
-)
+    console.warn({ ctx })
+    const handleClick = () => {
+      console.warn('TOOLBAR handleClick', isRunning)
+      ctx.emit('toggle-running-click')
+    }
+    
+    return {
+      isRunning,
+      handleClick,
+    }
+  },
+);
+
+AppToolbar.props = ['isRunning']

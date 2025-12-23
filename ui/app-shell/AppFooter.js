@@ -5,14 +5,26 @@ import { AppToolbar } from '../AppToolbar.js';
 export const AppFooter = defineComponent(
   getTemplate('app-footer'),
   (props, ctx) => {
-    const showToolbar = computed(() => props.showToolbar)
     
-    // watch(showToolbar, (value) => {
-    //   console.warn('showToolbar', showToolbar.value)
+    // const emitn = defineEmit(['toggle-running-click'])
+    const isRunning = ref(true);
+    console.warn('isRunning', isRunning.value)
+    
+    // watch(isRunning, (value) => {
+    //   console.warn('isRunning', isRunning.value)
     // })
     
+    const handleRunningToggle = () => {
+      isRunning.value = !isRunning.value;
+    }
+    
+    // const handleClick = () => {
+    //   emit('toggle-running-click')
+    // }
+    
     return {
-      showToolbar,
+      isRunning,
+      handleRunningToggle,
     }
   }, {
     components: {
@@ -21,4 +33,4 @@ export const AppFooter = defineComponent(
   },
 );
 
-AppFooter.props = ['showToolbar']
+// AppFooter.props = ['isRunning']

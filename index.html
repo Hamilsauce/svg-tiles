@@ -148,8 +148,8 @@
       <div id="app-footer-top">
         <div id="controls" data-controls="tile-brushes" class="container">
           <button class="app-button tile-selector" data-active="true" data-tile-type="barrier">Barrier</button>
-          <button class="app-button tile-selector" data-tile-type="ground">Ground</button>
           <button class="app-button tile-selector" data-tile-type="empty">Empty</button>
+          <button class="app-button tile-selector" data-tile-type="teleporter">Teleporter</button>
           <button class="app-button tile-selector" data-tile-type="exit">Exit</button>
           <button class="app-button tile-selector" data-tile-type="start">Start</button>
           <button class="app-button tile-selector" data-tile-type="delete">DELETE</button>
@@ -158,10 +158,15 @@
       </div>
       
       <div id="app-footer-bottom">
-        <div id="tool-labels">
+        <app-toolbar :is-running @toggle-running-click="handleRunningToggle"></app-toolbar>
+        <!-- <div id="tool-labels">
           <div class="tool-label" data-active="false" data-tool-group="favorites" id="favorites-label">
-            <svg _class="app-button heart" width="20" height="20" viewBox="0 0 122 107" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-              <path fill="#CDCDCD" d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z" />
+            USE V IF TO TOGGLE
+            <svg _class="app-button heart" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+            </svg>
+            <svg _class="app-button heart" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
             </svg>
           </div>
           <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
@@ -170,9 +175,31 @@
           <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
           <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
           <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
-        </div>
+        </div> -->
       </div>
     </footer>
+  </template>
+  
+  <template data-component="app-toolbar">
+    <div id="app-toolbar">
+      <div id="tools">
+        <div @click="handleClick" class="tool-label" data-active="false" data-tool-group="favorites" id="favorites-label">
+          <!-- USE V IF TO TOGGLE -->
+          <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+          </svg>
+          <svg v-if="isRunning" class="tool-label-icon" id="pause-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
+          </svg>
+        </div>
+        <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
+        <div class="tool-label" data-active="false" data-tool-group="select" _id="label">Select</div>
+        <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">Actors</div>
+        <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
+        <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
+        <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
+      </div>
+    </div>
   </template>
 </body>
 

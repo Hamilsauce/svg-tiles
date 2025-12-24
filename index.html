@@ -88,8 +88,8 @@
     </header>
   </template>
   
-  <template data-component="app-body">
-    <section id="app-body">
+  <template data-component="svg-canvas-host">
+    <div id="svg-canvas-host">
       <svg id="canvas" class="gradient" width="412" _height="681" viewBox="-0 -0 9 15" preserveAspectRatio="xMidYMid meet" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="edge-line-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -140,6 +140,12 @@
           <use href="#scene" transform="translate(0,0) rotate(0) scale(1)"></use>
         </g>
       </svg>
+    </div>
+  </template>
+  
+  <template data-component="app-body">
+    <section id="app-body">
+      <svg-canvas-host></svg-canvas-host>
     </section>
   </template>
   
@@ -158,32 +164,15 @@
       </div>
       
       <div id="app-footer-bottom">
-        <app-toolbar :is-running @toggle-running-click="handleRunningToggle"></app-toolbar>
-        <!-- <div id="tool-labels">
-          <div class="tool-label" data-active="false" data-tool-group="favorites" id="favorites-label">
-            USE V IF TO TOGGLE
-            <svg _class="app-button heart" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-              <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-            </svg>
-            <svg _class="app-button heart" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-              <path fill="#FFFFFF" d="M 13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z"></path>
-            </svg>
-          </div>
-          <div class="tool-label" data-active="true" data-tool-group="tile" id="tile-brush-label">Tiles</div>
-          <div class="tool-label" data-active="false" data-tool-group="select" _id="label">Select</div>
-          <div class="tool-label" data-active="false" data-tool-group="actor" _id="label">Actors</div>
-          <div class="tool-label" data-active="false" data-tool-group="layer" _id="label">Layers</div>
-          <div class="tool-label" data-active="false" data-tool-group="color" _id="label">Colors</div>
-          <div class="tool-label" data-active="false" data-tool-group="other" _id="label">Other</div>
-        </div> -->
+        <app-toolbar></app-toolbar>
       </div>
     </footer>
   </template>
   
   <template data-component="app-toolbar">
     <div id="app-toolbar">
-      <div id="tools">
-        <div @click="handleClick" class="tool-label" data-active="false" data-tool-group="favorites" id="favorites-label">
+      <div id="tools" :class="{ deactivated: isRunning }">
+        <div id="app-run-toggle" :class="{ activated: !isRunning }" @click="handleClick" class="tool-label" data-active="false" data-tool-group="run">
           <!-- USE V IF TO TOGGLE -->
           <svg v-if="!isRunning" class="tool-label-icon" id="play-icon" width="24" height="24" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <path fill="#FFFFFF" d="M 10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>

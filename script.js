@@ -7,6 +7,9 @@ import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';
 
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+import { useAppState } from './store/app.store.js';
+
+const { isRunning, setRunning } = useAppState();
 
 
 const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
@@ -122,7 +125,6 @@ const svgCanvas = new SVGCanvas(canvasEl);
 const scene = svgCanvas.dom.querySelector('#scene');
 const tileLayer = scene.querySelector('#tile-layer');
 const objectLayer = scene.querySelector('#object-layer');
-
 const selectionBox = getTileSelector(objectLayer);
 
 const contextMenu = useTemplate('context-menu');
@@ -178,30 +180,6 @@ selectionBox.on('selection', range => {
   graph.getRange(range, (tile) => tile.selected = true);
 });
 
-const pageScrolling = {
-  get isEnabled() {
-    return document.body.style.touchAction === 'none';
-  },
-  
-  enable() {
-    document.body.style.overflow = '';
-    svgCanvas.dom.style.overflow = '';
-    document.body.style.touchAction = '';
-    svgCanvas.dom.style.touchAction = '';
-    document.body.style.userSelect = '';
-    svgCanvas.dom.style.userSelect = '';
-  },
-  
-  disable() {
-    document.body.style.overflow = 'hidden';
-    svgCanvas.dom.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
-    svgCanvas.dom.style.touchAction = 'none';
-    document.body.style.userSelect = 'none';
-    svgCanvas.dom.style.userSelect = 'none';
-  }
-}
-
 console.warn('graph.width', graph.width)
 svgCanvas.setViewBox({
   x: -0.5,
@@ -214,9 +192,7 @@ svgCanvas.setCanvasDimensions({ width: window.innerWidth, height: window.innerHe
 
 const pointerup$ = fromEvent(svgCanvas, 'pointerup');
 
-pointerup$.pipe(
-  tap(x => pageScrolling.enable()),
-).subscribe();
+pointerup$.pipe().subscribe();
 
 let lastX
 let lastY
@@ -237,7 +213,11 @@ setTimeout(() => {
   svgCanvas.surface.setAttribute('height', lastY + 1);
 }, 900);
 
+
+// let isRunning = false;
+
 svgCanvas.addEventListener('click', async ({ detail }) => {
+  if (!isRunning.value) return;
   if (isMoving) return;
   if (contextMenu.dataset.show === 'true') return;
   if (isSelectingLinkTile === true) return;
@@ -467,8 +447,6 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
-    pageScrolling.enable();
-    
     
     const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
     

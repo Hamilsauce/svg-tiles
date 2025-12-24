@@ -1,4 +1,3 @@
-
 #tools {
   display: flex;
   flex-direction: row;
@@ -30,7 +29,18 @@
   border: 1px solid transparent;
   transition: 0.2s ease;
 }
-.tool-label[data-active=true]{
+
+.tool-label[data-active=true] {
   border-bottom: 2px solid var(--color-white0);
   color: #EFEFEF;
+}
+
+#tools.deactivated .tool-label {
+  filter: opacity(0.6);
+  pointer-events: none;
+}
+
+#tools.deactivated #app-run-toggle {
+  filter: opacity(1) !important;
+  pointer-events: all !important;
 }

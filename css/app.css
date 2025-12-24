@@ -52,11 +52,7 @@ body {
   color: #ECECEC;
   transition: width 0.5s, height 0.5s;
   z-index: 1001;
-  
-  #app-floating-menu-expanded {
-    /* width: 250px; */
-    /* height: 425px; */
-  }
+  filter: opacity(0.6);
   
   #app-floating-menu-collapsed {
     display: flex;
@@ -68,12 +64,36 @@ body {
     height: 100%;
     font-weight: 800;
     font-size: 14px;
+    /* filter: opacity(0.2); */
   }
+  
+  
+  #app-floating-menu-collapsed:hover {
+    /* filter: opacity(1); */
+  }
+  
+  #app-floating-menu-collapsed:active {
+    /* filter: opacity(1); */
+  }
+  
+  #app-floating-menu-expanded {
+    /* width: 250px; */
+    /* height: 425px; */
+    
+  }
+}
+
+#app-floating-men:hover {
+  filter: opacity(1);
+}
+#app-floating-men:active {
+  filter: opacity(1);
 }
 
 #app-floating-menu.expanded {
   width: 250px;
   height: 425px;
+  filter: opacity(1);
 }
 
 #app-body {

@@ -1,6 +1,9 @@
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { DOM, date, array, utils, text } = ham;
-import { getTileSelector } from './SelectionBox.js';
+import { getTileSelector } from './SelectionBoxNew2.js';
+// import { getTileSelector } from './SelectionBoxEdges.js';
+// import { getTileSelector } from './SelectionBoxAnchor.js';
+// import { getTileSelector } from './SelectionBox.js';
 import { DetailPanel } from './view/detail-panel.view.js';
 
 let currentPanel;
@@ -74,7 +77,7 @@ const drawRect = (p, s = 1, fill = 'black', className = 'tile', dataset) => {
   rect.classList.add(className);
   rect.width.baseVal.value = s;
   rect.height.baseVal.value = s;
-
+  
   rect.setAttribute('fill', fill)
   rect.dataset.x = p.x;
   rect.dataset.y = p.y;
@@ -228,7 +231,8 @@ const viewBox = canvas.viewBox;
 const selectionBox = getTileSelector(scene);
 
 selectionBox.on('selection', range => {
-  console.warn('SELECTION: ', range)
+  // console.warn('SELECTION: ', range)
+  
   // State.selection = getRange(range);
   // State.isSelecting = true;
 });

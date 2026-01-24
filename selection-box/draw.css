@@ -40,17 +40,34 @@ svg {
   fill: #5AB8CD3B;
 }
 
+.tile-selector {
+  * {
+    /* transition: 0.1s; */
+    
+  }
+  
+  rect {
+    fill: #A8A8A880;
+  }
+}
+
+.tile-selector[data-is-dragging=true] {
+  .selection-handle {
+    opacity: 0.5;
+  }
+}
+
 .tile-selector * {
   /* transition: 0.1s; */
 }
 
-.selection-box rect{
+.selection-box rect {
   fill: #D12424A1 !important;
   filter: opacity(0.5);
 }
 
 .selection-handle {
-  transition: stroke-width  0.075s;
+  transition: stroke-width 0.075s;
 }
 
 
@@ -59,7 +76,10 @@ svg {
   stroke-width: 0.25;
   width: 0.1px;
   height: 0.1px;
-  
+}
+
+.selection-handle[data-handle=start] {
+  fill: orange;
 }
 
 .board-tile {}
@@ -105,7 +125,7 @@ svg {
 
 #scene[data-is-drawing=false] .selection {
   fill: #00000012 !important;
-
+  
   stroke: #FF88F5;
   stroke-width: 0.1;
 }
@@ -121,7 +141,7 @@ svg {
   fill: #FFFEFA;
   stroke: #2A2B2C;
   stroke-width: 0.1;
-
+  
 }
 
 .tile-port {

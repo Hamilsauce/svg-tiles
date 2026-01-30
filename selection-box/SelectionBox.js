@@ -1,5 +1,7 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+import { initUpdateStatsDisplay } from '../selection-box/stats-display.js';
+
 const { template, utils } = ham;
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -11,6 +13,10 @@ const validatePoint = ({ x, y }) => {
 const validatePoints = (...points) => {
   return points.every(point => validatePoint(point));
 };
+
+const updateStats = initUpdateStatsDisplay(document.querySelector('#stats-display'));
+
+console.warn({ ...['poo', 'butt', 'jasky'] })
 
 export class TileSelector extends EventEmitter {
   #self;
@@ -93,12 +99,12 @@ export class TileSelector extends EventEmitter {
     return this.getDistance(this.startPoint, this.endPoint);
   }
   
-  domPoint(x, y, dir = 'floor') {
+  domPoint(x, y, clamp = false, dir = 'floor') {
     const p = new DOMPoint(x, y).matrixTransform(
       this.ctx.getScreenCTM().inverse()
     );
     
-    return {
+    return !clamp ? p : {
       x: dir === 'floor' ? Math.floor(p.x) : Math.ceil(p.x),
       y: dir === 'floor' ? Math.floor(p.y) : Math.ceil(p.y)
     };
@@ -151,6 +157,12 @@ export class TileSelector extends EventEmitter {
       x: +tile.dataset.x,
       y: +tile.dataset.y,
     });
+    this.setEndPoint({
+      x: +tile.dataset.x,
+      y: +tile.dataset.y,
+    });
+    
+    this.#handles.end.setAttribute('transform', 'translate(1,1)');
     
     this.updateSelection();
     
@@ -173,9 +185,9 @@ export class TileSelector extends EventEmitter {
       y: +y,
     };
     
-    if (!this.endPoint || this.endPoint.x === null) {
-      this.setEndPoint({ x: x + this.#unitSize, y: y + this.#unitSize });
-    }
+    // if (!this.endPoint || this.endPoint.x === null) {
+    //   this.setEndPoint({ x: x + this.#unitSize, y: y + this.#unitSize });
+    // }
     
     // this.emitRange()
     
@@ -209,6 +221,16 @@ export class TileSelector extends EventEmitter {
     
     this.#handles.end.setAttribute('cx', this.endPoint.x);
     this.#handles.end.setAttribute('cy', this.endPoint.y);
+    
+    updateStats({
+      start: { x: Math.round(this.startPoint.x), y: Math.round(this.startPoint.y) },
+      end: { x: Math.round(this.endPoint.x), y: Math.round(this.endPoint.y) },
+      xy: { x: Math.round(this.x), y: Math.round(this.y) },
+      wh: { x: Math.round(this.width), y: Math.round(this.height) },
+      // wasInverted: this.#wasInverted,
+      // inverted: this.isEndInverted,
+      handle: this.#dragTargetHandle?.dataset.handle,
+    })
   }
   
   getDistance(from, to) {
@@ -230,6 +252,8 @@ export class TileSelector extends EventEmitter {
       handle.dataset.isDragging = true;
       this.parent.addEventListener('pointermove', this.dragHandler);
       this.parent.addEventListener('pointerup', this.dragEndHandler);
+      this.#handles.end.setAttribute('transform', 'translate(0,0)');
+      
     }
   }
   
@@ -239,8 +263,12 @@ export class TileSelector extends EventEmitter {
     if (!this.#dragTargetHandle) return;
     
     const handle = this.#dragTargetHandle;
+    const handleLabel = this.#dragTargetHandle.dataset.handle;
+    const clampDir = handleLabel === 'start' ? 'floor' : 'ceil';
     
-    const pt = this.domPoint(e.clientX, e.clientY);
+    
+    const pt = this.domPoint(e.clientX, e.clientY, handleLabel);
+    const ptClamp = this.domPoint(e.clientX, e.clientY, true, clampDir);
     
     if (!validatePoint(pt)) return;
     
@@ -251,28 +279,28 @@ export class TileSelector extends EventEmitter {
     
     if (handle.dataset.handle === 'start') {
       if (
-        (pt.x - this.endPoint.x) < 0 &&
-        (pt.y - this.endPoint.y) < 0 &&
-        this.getDistance(this.endPoint, pt) >= this.#unitSize
+        (ptClamp.x - this.endPoint.x) < 0 &&
+        (ptClamp.y - this.endPoint.y) < 0 &&
+        this.getDistance(this.endPoint, ptClamp) >= this.#unitSize
       ) {
         this.setStartPoint(pt);
       }
-      else if ((pt.x - this.startPoint.x) > 0 && (pt.y - this.startPoint.y) > 0) {
-        this.setDragTarget()
+      else if ((ptClamp.x - this.startPoint.x) >= 0 && (ptClamp.y - this.startPoint.y) >= 0) {
+        // this.setDragTarget()
         this.setDragTarget(this.#handles.end)
         
-        this.setStartPoint(pt);
+        this.setEndPoint(pt);
       }
     }
     else if (handle.dataset.handle === 'end') {
       // if pt is greater than start
-      if ((pt.x - this.startPoint.x) > 0 && (pt.y - this.startPoint.y) > 0) {
+      if ((ptClamp.x - this.startPoint.x) >= 1 && (ptClamp.y - this.startPoint.y) >= 1) {
         this.setEndPoint(pt);
       }
       
       // if pt is less than start
-      else if ((pt.x - this.startPoint.x) < 0 && (pt.y - this.startPoint.y) < 0) {
-        this.setDragTarget()
+      else if ((ptClamp.x - this.startPoint.x) < 0 && (ptClamp.y - this.startPoint.y) < 0) {
+        // this.setDragTarget()
         this.setDragTarget(this.#handles.start)
         
         this.setStartPoint(pt);
@@ -287,15 +315,27 @@ export class TileSelector extends EventEmitter {
   onDragEnd(e) {
     this.parent.removeEventListener('pointermove', this.dragHandler);
     this.parent.removeEventListener('pointerup', this.dragEndHandler);
+    const handle = this.#dragTargetHandle;
+    
     this.#dragTargetHandle.dataset.isDragging = false;
     this.#dragTargetHandle = null;
     
-    const pt = this.domPoint(e.clientX, e.clientY);
     
-    if (pt.x < 0 || pt.y < 0) {
-      console.warn('out of range', pt.x, pt.y)
-      return
+    // if (pt.x < 0 || pt.y < 0) {
+    //   console.warn('out of range', pt.x, pt.y)
+    //   return
+    // }
+    
+    if (handle.dataset.handle === 'start') {
+      const pt = this.domPoint(e.clientX, e.clientY, true, 'floor');
+      this.setStartPoint(pt)
     }
+    else if (handle.dataset.handle === 'end') {
+      const pt = this.domPoint(e.clientX, e.clientY, true, 'ceil');
+      this.setEndPoint(pt)
+    }
+    this.updateSelection()
+    
     
     this.emitRange();
   }

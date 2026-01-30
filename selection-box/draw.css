@@ -29,6 +29,7 @@ body {
   height: 100%;
   padding-top: 0px;
   overflow: hidden;
+  position: relative;
   /* min-width:100vw;min-height:100vh; */
 }
 
@@ -180,4 +181,58 @@ svg {
   color: #000;
   transform: scale(0.05);
   white-space: nowrap;
+}
+
+
+#stats-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0px;
+  width: 100px;
+  height: 100px;
+  background: #FFFFFF;
+  font-size: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  
+  #stats-top-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
+    gap: 2px 4px;
+    background: #D9D9D9;
+  }
+  
+  #stats-bottom-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-items: center;
+    gap: 0px;
+    gap: 4px;
+
+    background: #FFFFFF;
+  }
+  
+  .stat-output {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    align-items: center;
+    
+    gap: 8px;
+    width: 100%;
+    /* height: 100%; */
+    
+    background: #D9D9D9;
+  }
 }

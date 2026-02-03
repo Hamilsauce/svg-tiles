@@ -1,3 +1,4 @@
+// import { dispatchPointerEvent } from '../lib/utils.js'
 import { Graph, TILE_TYPE_INDEX } from './lib/store.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { maps } from './maps.js';
@@ -173,7 +174,6 @@ objectLayer.append(actor1, actor2, contextMenu);
 
 selectionBox.on('selection', range => {
   selectedRange = getRange(range);
-  console.warn(selectedRange)
   const { start, end } = range;
   contextMenuTransformList.translateTo(end.x + 1.5, end.y - 5)
   
@@ -515,7 +515,7 @@ contextMenu.addEventListener('click', e => {
         
         svgCanvas.dom.removeEventListener('click', handleTileLinkSelect);
         
-        dispatchPointerEvent(selectedTile, 'contextmenu')
+        // dispatchPointerEvent(selectedTile, 'contextmenu')
         
         return;
       }

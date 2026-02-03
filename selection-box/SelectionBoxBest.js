@@ -1,6 +1,5 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
-import { dispatchPointerEvent } from '../lib/utils.js'
 const { template, utils, sleep } = ham;
 
 const app = document.querySelector('#app');
@@ -245,15 +244,13 @@ export class TileSelector extends EventEmitter {
     const focusPoint = this.#points.focus;
     const isSelBox = this.selectBox === target
     const pt = this.domPoint(clientX, clientY);
-    const pointerClamp = this.clampToBounds(this.pointerStart)
-    const pt2 = this.clampToBounds(pt)
     
     e.stopPropagation();
     
     if (this.dragMode === 'translation') {
       // this.#points.translation = this.clampToBounds(this.#points.translation)
-      this.#points.translation.x = pt2.x - this.pointerStart.x
-      this.#points.translation.y = pt2.y - this.pointerStart.y
+      this.#points.translation.x = pt.x - this.pointerStart.x
+      this.#points.translation.y = pt.y - this.pointerStart.y
       
       this.render();
       return
@@ -281,7 +278,7 @@ export class TileSelector extends EventEmitter {
         x: this.#points.a.x + dx,
         y: this.#points.a.y + dy,
       }
-
+      
       const aPoint = this.clampToBounds({
         x: this.#points.a.x + dx,
         y: this.#points.a.y + dy,
@@ -312,7 +309,7 @@ export class TileSelector extends EventEmitter {
       focusPoint.y = clamped.y;
     }
     this.#handles.setFocus(null);
-
+    
     document.removeEventListener('pointermove', this.dragHandler);
     document.removeEventListener('pointerup', this.dragEndHandler);
     this.isDragging = false;
@@ -321,7 +318,7 @@ export class TileSelector extends EventEmitter {
     
     
     this.emitRange();
-
+    
   }
   
   async #render(pt) {

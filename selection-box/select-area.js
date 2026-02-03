@@ -240,10 +240,8 @@ const viewBox = canvas.viewBox;
 const selectionBox = new TileSelector(scene);
 
 selectionBox.on('selection', range => {
-  console.warn('SELECTION: ', range)
   const tileRange = getRange(range);
   
-  // console.warn('tileRange: ', tileRange)
   
   State.selection = tileRange
   // State.isSelecting = true;
@@ -279,7 +277,6 @@ canvas.addEventListener('click', (e = new PointerEvent('pointerdown')) => {
   if (e.metaKey) {
     console.log('metaKey NEWBS');
   }
-  console.warn('current t', { x: +e.target.dataset.x, y: +e.target.dataset.y })
   // e.stopPropagation();
   // e.preventDefault();
   selectionBox.insertAt({ x: +e.target.dataset.x, y: +e.target.dataset.y });

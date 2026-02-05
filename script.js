@@ -175,12 +175,24 @@ objectLayer.append(actor1, actor2, contextMenu);
 selectionBox.on('selection', range => {
   selectedRange = getRange(range);
   const { start, end } = range;
-  contextMenuTransformList.translateTo(start.x - 2.5, start.y - 2.5)
+  
+  const middle = Math.abs(start.x - end.x)
   
   graph.getRange(range, (tile) => tile.selected = true);
+  
+  
+  const menuContainer = contextMenu.querySelector('.context-menu');
+  contextMenuTransformList.translateTo(start.x, start.y - 2)
+  
+  
+  if (menuContainer.dataset.showActions === 'true') {
+    contextMenu.dataset.show = true;
+    menuContainer.dataset.showActions = true;
+  } else {
+    menuContainer.dataset.showActions = false;
+  }
 });
 
-console.warn('graph.width', graph.width)
 svgCanvas.setViewBox({
   x: -0.5,
   y: -0.5,
@@ -403,12 +415,18 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
   }
 });
 
-contextMenu .addEventListener('pointermove', e =>{
- console.warn('dragger')
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation();
- 
+contextMenu.addEventListener('pointerdown', e => {
+  // console.warn('dragger')
+  // e.preventDefault();
+  // e.stopPropagation();
+  // e.stopImmediatePropagation();
+  
+})
+contextMenu.addEventListener('pointermove', e => {
+  // e.preventDefault();
+  // e.stopPropagation();
+  // e.stopImmediatePropagation();
+  
 })
 
 svgCanvas.layers.tile.addEventListener('contextmenu', e => {
@@ -425,7 +443,7 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   // const listEl2 = contextMenu.querySelector('.context-menu-list.secondary');
   // listEl2.style.display = shouldShowSecondaryList ? null : 'none'
   const menuContainer = contextMenu.querySelector('.context-menu');
-
+  
   if (tileType === 'teleport') {
     const selectedNode = graph.getNodeAtPoint({
       x: +targ.dataset.x,
@@ -436,15 +454,14 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
       const line = createEdgeLine(selectedNode, selectedNode.target)
       objectLayer.append(line)
     }
-
+    
+    menuForeignObject.setAttribute('width', 250)
     contextMenu.dataset.show = true;
     menuContainer.dataset.showActions = true;
-    
-    const svgListContainer = contextMenu.firstElementChild;
-    
   } else {
+    menuForeignObject.setAttribute('width', 200)
+    
     menuContainer.dataset.showActions = false;
-
   }
   
   targ.dataset.selected = true;

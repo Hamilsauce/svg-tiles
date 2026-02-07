@@ -11,7 +11,7 @@ import { useAppState } from './store/app.store.js';
 
 const { isRunning, setRunning } = useAppState();
 
-const {addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
+const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
 const { fromEvent } = rxjs;
 const { tap } = rxjs.operators;
 
@@ -176,7 +176,7 @@ selectionBox.on('selection', range => {
   const { start, end } = range;
   
   const middle = Math.abs(start.x - end.x)
-  
+  console.table({ start, end })
   graph.getRange(range, (tile) => tile.selected = true);
   
   
@@ -543,7 +543,7 @@ contextMenu.addEventListener('click', e => {
         
         svgCanvas.dom.removeEventListener('click', handleTileLinkSelect);
         
-        // dispatchPointerEvent(selectedTile, 'contextmenu')
+        dispatchPointerEvent(selectedTile, 'contextmenu')
         
         return;
       }
@@ -566,7 +566,7 @@ contextMenu.addEventListener('click', e => {
       });
       
       nodeModel.setType(selectedTileTypeName);
-      
+
       if (selectedTileTypeName === 'teleport') {
         nodeModel.target = { x: 1, y: 1 };
       }

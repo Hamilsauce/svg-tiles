@@ -209,20 +209,7 @@ let goalTile
 let isMoving = false;
 let isSelectingLinkTile = false;
 
-setTimeout(() => {
-  lastX = +tileLayer.lastElementChild.dataset.x;
-  lastY = +tileLayer.lastElementChild.dataset.y;
-  
-  tileLayer.dataset.width = lastX;
-  tileLayer.dataset.height = lastY;
-  
-  goalTile = tileLayer.querySelector('[data-tile-type="goal"]');
-  
-  svgCanvas.surface.setAttribute('width', lastX + 1);
-  svgCanvas.surface.setAttribute('height', lastY + 1);
-}, 900);
-
-svgCanvas.addEventListener('click', async ({ detail }) => {
+const handleTileClick = async ({ detail }) => {
   if (!isRunning.value) return;
   if (isMoving) return;
   if (contextMenu.dataset.show === 'true') return;
@@ -407,14 +394,51 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
       }
     }, ANIM_RATE);
   }
-});
+}
+
+setTimeout(() => {
+  lastX = +tileLayer.lastElementChild.dataset.x;
+  lastY = +tileLayer.lastElementChild.dataset.y;
+  
+  tileLayer.dataset.width = lastX;
+  tileLayer.dataset.height = lastY;
+  
+  goalTile = tileLayer.querySelector('[data-tile-type="goal"]');
+  
+  svgCanvas.surface.setAttribute('width', lastX + 1);
+  svgCanvas.surface.setAttribute('height', lastY + 1);
+}, 900);
+
+
+/*
+  ACTOR-TARGET AUTOMATION
+*/
+
+// setTimeout(() => {
+//   const targetEls = [
+//     tileAt(5, 7),
+//     tileAt(10, 6),
+//     tileAt(13, 2),
+//   ];
+//   let i = 0
+//   setInterval(() => {
+//     if (i < targetEls.length) {
+//       handleTileClick({ detail: { target: targetEls[i] } })
+//     }
+//     i++
+
+//   }, 2500)
+// }, 2000);
+
+svgCanvas.addEventListener('click', handleTileClick)
 
 contextMenu.addEventListener('pointerdown', e => {
   e.stopPropagation();
-})
+});
+
 contextMenu.addEventListener('pointermove', e => {
   e.stopPropagation();
-})
+});
 
 svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   e.preventDefault();
@@ -531,8 +555,6 @@ contextMenu.addEventListener('click', e => {
         isSelectingLinkTile = false;
         
         svgCanvas.dom.removeEventListener('click', handleTileLinkSelect);
-        
-        dispatchPointerEvent(selectedTile, 'contextmenu')
         
         return;
       }

@@ -176,7 +176,7 @@ selectionBox.on('selection', range => {
   const { start, end } = range;
   
   const middle = Math.abs(start.x - end.x)
-
+  
   graph.getRange(range, (tile) => tile.selected = true);
   
   const menuContainer = contextMenu.querySelector('.context-menu');

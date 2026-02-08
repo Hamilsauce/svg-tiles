@@ -15,7 +15,7 @@ const handleA = document.querySelector('#a-handle');
 const handleB = document.querySelector('#b-handle');
 
 const SELECTOR_TEMPLATE = `
-  <rect class="selection-box" stroke-width="0.07" stroke="green" width="1" height="1" x="2" y="2" transform="translate(-0.5,-0.5)"></rect>
+  <rect class="selection-box" stroke-width="0.1" _stroke="green" width="1" height="1" x="2" y="2" transform="translate(-0.5,-0.5)"></rect>
   <circle class="selection-handle" data-handle="a" id="a-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)"></circle>
   <circle class="selection-handle" data-handle="b" id="b-handle" r="0.4" _fill="white" stroke-width="0.07" stroke="green" cx="0" cy="0" transform="translate(0,0)" data-is-dragging="false"></circle>`;
 
@@ -41,81 +41,89 @@ const clampPointWithBounds = (bounds) => (pt, upperTrim = 1) => clampPoint(pt, b
 
 const ROLES = ['a', 'b']
 
+const _handles = {
+  handleKeys: ROLES,
+  a: handleA,
+  b: handleB,
+  anchor: null,
+  focus: null,
+  
+  isHandle(el) {
+    return this.handleKeys.some(k => this[k] === el)
+  },
+  
+  setFocus(label = null) {
+    if (!label && this.focus) {
+      delete this.focus.dataset.role
+      delete this.anchor.dataset.role
+      this.focus = null;
+      this.anchor = null;
+      return;
+    }
+    
+    const anchorLabel = this.handleKeys.filter(_ => _ !== label)[0]
+    
+    this.focus = this[label] ?? null;
+    this.anchor = this[anchorLabel] ?? null;
+    
+    if (this.focus) {
+      this.focus.dataset.role = 'focus'
+      this.anchor.dataset.role = 'anchor'
+    }
+  },
+}
+const _points = {
+  pointKeys: ROLES,
+  a: domPoint(2, 2),
+  b: domPoint(2, 2),
+  translation: domPoint(0, 0),
+  anchor: null,
+  focus: null,
+  
+  get x() { return Math.min(this.anchor?.x, this.focus?.x); },
+  get y() { return Math.min(this.anchor?.y, this.focus?.y); },
+  get x2() { return (Math.max(this.anchor?.x, this.focus?.x)) <= 0 ? 1 : (Math.max(this.anchor.x, this.focus.x)) + 0 },
+  get y2() { return (Math.max(this.anchor?.y, this.focus?.y)) <= 0 ? 1 : (Math.max(this.anchor.y, this.focus.y)) + 0 },
+  get width() { return (this.x2 - this.x) + 1 },
+  get height() { return (this.y2 - this.y) + 1 },
+  
+  setFocus(label) {
+    const anchorLabel = this.pointKeys.find(_ => _ !== label)
+    if (!label || !anchorLabel) return;
+    
+    this.focus = this[label] ?? null;
+    this.anchor = this[anchorLabel] ?? null;
+  },
+}
+const SELECTOR_DEFAULTS = {
+  handles: _handles,
+  points: _points,
+  unitSize: 1,
+}
+
 export class TileSelector extends EventEmitter {
   #self;
+  #handles = _handles;
+  #points = _points;
   
-  #handles = {
-    handleKeys: ROLES,
-    a: handleA,
-    b: handleB,
-    anchor: null,
-    focus: null,
-    
-    isHandle(el) {
-      return this.handleKeys.some(k => this[k] === el)
-    },
-    
-    setFocus(label = null) {
-      if (!label && this.focus) {
-        delete this.focus.dataset.role
-        delete this.anchor.dataset.role
-        this.focus = null;
-        this.anchor = null;
-        return;
-      }
-      
-      const anchorLabel = this.handleKeys.filter(_ => _ !== label)[0]
-      
-      this.focus = this[label] ?? null;
-      this.anchor = this[anchorLabel] ?? null;
-      
-      if (this.focus) {
-        this.focus.dataset.role = 'focus'
-        this.anchor.dataset.role = 'anchor'
-      }
-    },
-  }
-  
-  #points = {
-    pointKeys: ROLES,
-    a: domPoint(2, 2),
-    b: domPoint(2, 2),
-    translation: domPoint(0, 0),
-    anchor: this.a,
-    focus: this.b,
-    
-    get x() { return Math.min(this.anchor?.x, this.focus?.x); },
-    get y() { return Math.min(this.anchor?.y, this.focus?.y); },
-    get x2() { return (Math.max(this.anchor?.x, this.focus?.x)) <= 0 ? 1 : (Math.max(this.anchor.x, this.focus.x)) + 0 },
-    get y2() { return (Math.max(this.anchor?.y, this.focus?.y)) <= 0 ? 1 : (Math.max(this.anchor.y, this.focus.y)) + 0 },
-    get width() { return (this.x2 - this.x) + 1 },
-    get height() { return (this.y2 - this.y) + 1 },
-    
-    setFocus(label) {
-      const anchorLabel = this.pointKeys.find(_ => _ !== label)
-      if (!label || !anchorLabel) return;
-      
-      this.focus = this[label] ?? null;
-      this.anchor = this[anchorLabel] ?? null;
-    },
-  }
-  
-  constructor(svgContext, unitSize = 1) {
+  constructor(svgContext, options = SELECTOR_DEFAULTS) {
     super();
+    const { handles, points, unitSize } = options;
     
     this.svgContext = svgContext
     this.#self = document.createElementNS(SVG_NS, 'g');
     this.#self.classList.add('tile-selector');
     this.#self.setAttribute('transform', 'translate(0.5,0.5)');
+  
     this.#self.innerHTML = SELECTOR_TEMPLATE;
+  
+    this.#handles.a = this.#self.querySelector('[data-handle="a"]');
+    this.#handles.b = this.#self.querySelector('[data-handle="b"]');
+    
     
     this.dragStartHandler = this.onDragStart.bind(this);
     this.dragHandler = this.onDragHandle.bind(this);
     this.dragEndHandler = this.onDragEnd.bind(this);
-    
-    this.svgContext.append(this.#self);
-    this.#handles.a = this.#self.querySelector('[data-handle="a"]');
-    this.#handles.b = this.#self.querySelector('[data-handle="b"]');
     
     this.#self.style.touchAction = 'none';
     

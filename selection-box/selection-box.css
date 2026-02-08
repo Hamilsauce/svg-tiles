@@ -20,13 +20,15 @@
 }
 
 .selection-box {
-  fill: #134E4426 !important;
-  /* filter: opacity(0.25) !important; */
+  fill: #FFFFFF36 !important;
+  stroke: #38A658;
+ stroke: green;
+  filter: brightness(1.2) drop-shadow(0 0px 0.075px #0000007A);
 }
 
 .selection-handle {
   fill: #FFFFFF7A;
-  transition: stroke-width 0.075s;
+  /* transition: 0.075s; */
 }
 
 
@@ -40,6 +42,8 @@
 .tile-selector[data-is-dragging=true] {
   .selection-handle[data-role=anchor] {
     fill: #FFFFFF !important;
+    fill: green !important;
+
     stroke: green;
   }
   
@@ -49,7 +53,13 @@
   }
   
   .selection-handle {
-    /* opacity: 0; */
+    opacity: 0.25;
+  }
+  
+  .selection-box{
+    stroke-width: 0.15px;
+    filter: brightness(1.2) drop-shadow(0 0px 0.125px #000000AD);
+
   }
 }
 

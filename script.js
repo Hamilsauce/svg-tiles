@@ -176,13 +176,11 @@ selectionBox.on('selection', range => {
   const { start, end } = range;
   
   const middle = Math.abs(start.x - end.x)
-  console.table({ start, end })
+
   graph.getRange(range, (tile) => tile.selected = true);
-  
   
   const menuContainer = contextMenu.querySelector('.context-menu');
   contextMenuTransformList.translateTo(start.x, start.y - 2)
-  
   
   if (menuContainer.dataset.showActions === 'true') {
     contextMenu.dataset.show = true;
@@ -223,9 +221,6 @@ setTimeout(() => {
   svgCanvas.surface.setAttribute('width', lastX + 1);
   svgCanvas.surface.setAttribute('height', lastY + 1);
 }, 900);
-
-
-// let isRunning = false;
 
 svgCanvas.addEventListener('click', async ({ detail }) => {
   if (!isRunning.value) return;
@@ -415,17 +410,10 @@ svgCanvas.addEventListener('click', async ({ detail }) => {
 });
 
 contextMenu.addEventListener('pointerdown', e => {
-  // console.warn('dragger')
-  // e.preventDefault();
   e.stopPropagation();
-  // e.stopImmediatePropagation();
-  
 })
 contextMenu.addEventListener('pointermove', e => {
-  // e.preventDefault();
   e.stopPropagation();
-  // e.stopImmediatePropagation();
-  
 })
 
 svgCanvas.layers.tile.addEventListener('contextmenu', e => {
@@ -439,8 +427,6 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   
   const menuForeignObject = contextMenu.querySelector('.context-menu-foreignobject');
   const listEl = contextMenu.querySelector('.context-menu-list');
-  // const listEl2 = contextMenu.querySelector('.context-menu-list.secondary');
-  // listEl2.style.display = shouldShowSecondaryList ? null : 'none'
   const menuContainer = contextMenu.querySelector('.context-menu');
   
   if (tileType === 'teleport') {
@@ -454,7 +440,6 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
       objectLayer.append(line)
     }
     
-    // menuForeignObject.setAttribute('width', 250)
     contextMenu.dataset.show = true;
     menuContainer.dataset.showActions = true;
   } else {
@@ -467,8 +452,10 @@ svgCanvas.layers.tile.addEventListener('contextmenu', e => {
   selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
   
   contextMenu.parentElement.append(contextMenu);
-  // contextMenuTransformList.translateTo(+targ.dataset.x + 1.5, +targ.dataset.y - 2)
+  const [firstItem, lastItem] = [listEl.firstElementChild, listEl.lastElementChild]
+  lastItem.scrollIntoView()
   contextMenu.dataset.show = true;
+  firstItem.scrollIntoView({ behavior: 'smooth' })
   
   const blurContextMenu = (e) => {
     e.preventDefault();

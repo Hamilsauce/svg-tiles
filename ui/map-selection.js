@@ -15,12 +15,12 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
   
   if (!hasInitViewBox) {
-    svgCanvas.setViewBox({
-      x: 0,
-      y: 0,
-      width: graph.width,
-      height: graph.height
-    });
+    // svgCanvas.setViewBox({
+    //   x: 0,
+    //   y: 0,
+    //   width: graph.width+5,
+    //   height: graph.height+5,
+    // });
   }
   
   selectionBox.setBounds({

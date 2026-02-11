@@ -1,3 +1,4 @@
+import { computed, watch } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { AppBody } from '../ui/app-shell/AppBody.js';
 import { AppCreateMapView } from '../ui/views/AppCreateMapView.js'
@@ -23,3 +24,5 @@ export const router = createRouter({
   history: createMemoryHistory(),
   routes,
 });
+
+export const route = computed(() => router.currentRoute.value);

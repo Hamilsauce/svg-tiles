@@ -3,6 +3,7 @@
 #minimap-surface {
   fill: #E8E8E8;
   stroke: #000000;
+  stroke-width: 0.2;
   filter: drop-shadow(0 0px 1px #2F2F2F65);
   
 }

@@ -57,7 +57,8 @@ export class SVGCanvas extends EventTarget {
       const vpTransform = this.viewport.transform.baseVal
       const matrix = vpTransform.getItem(0).matrix;
       const transformFromMatrix = vpTransform.createSVGTransformFromMatrix(matrix)
-      
+    const xform = this.viewport.getAttribute('transform')
+    
       const minimapBB = this.minimap.getBoundingClientRect();
       const mmBB = {
         left: minimapBB.x,

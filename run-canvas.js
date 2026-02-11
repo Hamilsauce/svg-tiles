@@ -224,7 +224,7 @@ export const runCanvas = async () => {
     if (isMoving) return;
     if (contextMenu.dataset.show === 'true') return;
     if (isSelectingLinkTile === true) return;
-   
+    
     
     deselectRange();
     
@@ -407,6 +407,76 @@ export const runCanvas = async () => {
     }
   }
   
+  const handleEditTileClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    const targ = e.detail.target.closest('.tile');
+    const tileType = targ.dataset.tileType;
+    const shouldShowSecondaryList = tileType === 'teleport'
+    
+    const menuForeignObject = contextMenu.querySelector('.context-menu-foreignobject');
+    const listEl = contextMenu.querySelector('.context-menu-list');
+    const menuContainer = contextMenu.querySelector('.context-menu');
+    
+    if (tileType === 'teleport') {
+      const selectedNode = graph.getNodeAtPoint({
+        x: +targ.dataset.x,
+        y: +targ.dataset.y,
+      });
+      
+      if (selectedNode.target) {
+        const line = createEdgeLine(selectedNode, selectedNode.target)
+        objectLayer.append(line)
+      }
+      
+      contextMenu.dataset.show = true;
+      menuContainer.dataset.showActions = true;
+    } else {
+      menuForeignObject.setAttribute('width', 200)
+      
+      menuContainer.dataset.showActions = false;
+    }
+    
+    targ.dataset.selected = true;
+    selectionBox.insertAt({ x: +targ.dataset.x, y: +targ.dataset.y });
+    
+    contextMenu.parentElement.append(contextMenu);
+    const [firstItem, lastItem] = [listEl.firstElementChild, listEl.lastElementChild]
+    lastItem.scrollIntoView()
+    contextMenu.dataset.show = true;
+    firstItem.scrollIntoView({ behavior: 'smooth' })
+    
+    const blurContextMenu = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      
+      const edgeLines = [...objectLayer.querySelectorAll('.edge-line')];
+      
+      edgeLines.forEach(el => {
+        el.remove();
+      })
+      
+      if (contextMenu.dataset.show === 'true') {
+        deselectRange();
+        selectionBox.remove();
+        
+        contextMenu.dataset.show = false;
+        contextMenu.dataset.showActions = false;
+        
+        // contextMenuTransformList.translateTo(0, 5);
+        // contextMenuTransformList.rotateTo(0, 0);
+        svgCanvas.removeEventListener('click', blurContextMenu);
+      }
+    };
+    
+    svgCanvas.addEventListener('click', blurContextMenu);
+    
+    // navigator.clipboard.writeText(document.body.innerHTML)
+  
+  }
+  
   setTimeout(() => {
     lastX = +tileLayer.lastElementChild.dataset.x;
     lastY = +tileLayer.lastElementChild.dataset.y;
@@ -441,7 +511,13 @@ export const runCanvas = async () => {
   //   }, 2500)
   // }, 2000);
   
-  svgCanvas.addEventListener('click', handleTileClick)
+  svgCanvas.addEventListener('click', (e) => {
+    if (isRunning.value) {
+      handleTileClick(e)
+    } else {
+      handleEditTileClick(e)
+    }
+  })
   
   contextMenu.addEventListener('pointerdown', e => {
     e.stopPropagation();
@@ -451,7 +527,8 @@ export const runCanvas = async () => {
     e.stopPropagation();
   });
   
-  svgCanvas.layers.tile.addEventListener('contextmenu', e => {
+  svgCanvas.layers.tile.addEventListener('contextmenu', e => 
+  {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
@@ -522,79 +599,81 @@ export const runCanvas = async () => {
   });
   
   contextMenu.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    
-    const targ = e.target.closest('li');
-    
-    const selectedOptionValue = targ.dataset.value;
-    const selectedOptionType = targ.dataset.type;
-    const selectedTileTypeName = targ.dataset.value;
-    
-    const selectedTile = svgCanvas.layers.tile.querySelector('.tile[data-selected="true"]');
-    const selectedTiles = selectedRange;
-    
-    if (!targ || !selectedTile) return;
-    
-    const node = graph.getNodeAtPoint({
-      x: +selectedTile.dataset.x,
-      y: +selectedTile.dataset.y,
-    });
-    
-    if (selectedOptionType === 'tile-action') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
       
-      if (selectedOptionValue === 'link-teleport') {
-        contextMenu.dataset.show = false;
-        isSelectingLinkTile = true;
+      const targ = e.target.closest('li');
+      
+      const selectedOptionValue = targ.dataset.value;
+      const selectedOptionType = targ.dataset.type;
+      const selectedTileTypeName = targ.dataset.value;
+      
+      const selectedTile = svgCanvas.layers.tile.querySelector('.tile[data-selected="true"]');
+      const selectedTiles = selectedRange;
+      
+      if (!targ || !selectedTile) return;
+      
+      const node = graph.getNodeAtPoint({
+        x: +selectedTile.dataset.x,
+        y: +selectedTile.dataset.y,
+      });
+      
+      if (selectedOptionType === 'tile-action') {
         
-        const handleTileLinkSelect = (e) => {
-          const linkTarget = e.target.closest('.tile')
-          const nodeToLink = graph.getNodeAtPoint({
-            x: +linkTarget.dataset.x,
-            y: +linkTarget.dataset.y,
-          });
+        if (selectedOptionValue === 'link-teleport') {
+          contextMenu.dataset.show = false;
+          isSelectingLinkTile = true;
           
-          nodeToLink.setType('teleport');
-          
-          node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
-          
-          if (!nodeToLink.linkedNodeAddress) {
-            nodeToLink.linkToNode({ x: node.x, y: node.y });
+          const handleTileLinkSelect = (e) => {
+            const linkTarget = e.target.closest('.tile')
+            const nodeToLink = graph.getNodeAtPoint({
+              x: +linkTarget.dataset.x,
+              y: +linkTarget.dataset.y,
+            });
+            
+            nodeToLink.setType('teleport');
+            
+            node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
+            
+            if (!nodeToLink.linkedNodeAddress) {
+              nodeToLink.linkToNode({ x: node.x, y: node.y });
+            }
+            
+            isSelectingLinkTile = false;
+            
+            svgCanvas.dom.removeEventListener('click', handleTileLinkSelect);
+            
+            return;
           }
           
-          isSelectingLinkTile = false;
-          
-          svgCanvas.dom.removeEventListener('click', handleTileLinkSelect);
-          
+          svgCanvas.dom.addEventListener('click', handleTileLinkSelect);
           return;
         }
+      }
+      
+      else if (selectedOptionType === 'tile-type') {
+        node.setType(selectedTileTypeName);
         
-        svgCanvas.dom.addEventListener('click', handleTileLinkSelect);
-        return;
+        selectedTile.dataset.tileType = selectedTileTypeName;
+        selectedTile.dataset.selected = false;
+        
+        selectedRange.forEach((tile, i) => {
+          const nodeModel = graph.getNodeAtPoint({
+            x: +tile.dataset.x,
+            y: +tile.dataset.y,
+          });
+          
+          nodeModel.setType(selectedTileTypeName);
+          
+          if (selectedTileTypeName === 'teleport') {
+            nodeModel.target = { x: 1, y: 1 };
+          }
+          
+          tile.dataset.tileType = selectedTileTypeName;
+        });
       }
     }
     
-    else if (selectedOptionType === 'tile-type') {
-      node.setType(selectedTileTypeName);
-      
-      selectedTile.dataset.tileType = selectedTileTypeName;
-      selectedTile.dataset.selected = false;
-      
-      selectedRange.forEach((tile, i) => {
-        const nodeModel = graph.getNodeAtPoint({
-          x: +tile.dataset.x,
-          y: +tile.dataset.y,
-        });
-        
-        nodeModel.setType(selectedTileTypeName);
-        
-        if (selectedTileTypeName === 'teleport') {
-          nodeModel.target = { x: 1, y: 1 };
-        }
-        
-        tile.dataset.tileType = selectedTileTypeName;
-      });
-    }
-  });
+  );
 }

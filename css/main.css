@@ -57,6 +57,19 @@ body {
   filter: drop-shadow(0 0px 1.5px #2F2F2F65);
 }
 
+.axis-line {
+  stroke: #373737A8;
+  stroke-width: 0.1;
+  filter: drop-shadow(0 0px 1.5px #2F2F2F65);
+}
+.origin {
+  fill: #2D2D2D;
+  stroke: #D3D3D3;
+/* filter: contrast(0.6); */
+  stroke-width: 0.1;
+  /* filter: drop-shadow(0 0px 1.5px #2F2F2F65); */
+}
+
 #context-menu-container {
   pointer-events: auto;
   touch-action: none;

@@ -51,22 +51,22 @@ body {
 }
 
 #surface {
-  fill: transparent;
+  fill: #18181887;
   stroke: #FFFFFF80;
   stroke-width: 0.2;
   filter: drop-shadow(0 0px 1.5px #2F2F2F65);
 }
 
 .axis-line {
-  stroke: #373737A8;
-  stroke-width: 0.1;
-  filter: drop-shadow(0 0px 1.5px #2F2F2F65);
+  stroke: #2F2F2FA8;
+  stroke-width: 0.05;
+  filter: drop-shadow(0 0px 0.05px #FFFFFFA3);
 }
 .origin {
-  fill: #2D2D2D;
-  stroke: #D3D3D3;
+  fill: #363636A8;
+  stroke: #4B4B4BAB;
 /* filter: contrast(0.6); */
-  stroke-width: 0.1;
+  stroke-width: 0.05;
   /* filter: drop-shadow(0 0px 1.5px #2F2F2F65); */
 }
 

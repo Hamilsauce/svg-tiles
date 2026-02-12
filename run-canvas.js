@@ -276,6 +276,12 @@ export const runCanvas = async () => {
     
     const targetNodeEl = actorTarget ? tile : svgCanvas.querySelector('.tile[data-active="true"]');
     
+    if (!targetNodeEl) {
+      console.warn('No Target Node');
+      return;
+    }
+    
+    
     const startNode = graph.getNodeAtPoint({ x: +startNodeEl.dataset.x, y: +startNodeEl.dataset.y });
     
     const targetNode = graph.getNodeAtPoint({ x: +targetNodeEl.dataset.x, y: +targetNodeEl.dataset.y });
@@ -486,8 +492,8 @@ export const runCanvas = async () => {
     
     goalTile = tileLayer.querySelector('[data-tile-type="goal"]');
     
-    svgCanvas.surface.setAttribute('width', lastX + 1);
-    svgCanvas.surface.setAttribute('height', lastY + 1);
+    // svgCanvas.surface.setAttribute('width', lastX + 1);
+    // svgCanvas.surface.setAttribute('height', lastY + 1);
   }, 900);
   
   

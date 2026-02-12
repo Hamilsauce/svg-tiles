@@ -34,12 +34,12 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   
   svgCanvas.layers.tile.innerHTML = '';
   
-  Object.assign(svgCanvas.surface.style, {
-    x: 0,
-    y: 0,
-    width: graph.width,
-    height: graph.height
-  });
+  // Object.assign(svgCanvas.surface.style, {
+  //   x: 0,
+  //   y: 0,
+  //   width: graph.width,
+  //   height: graph.height
+  // });
   
   graph.nodes.forEach(({ x, y, tileType }, rowNumber) => {
     if (tileType === 'start') {

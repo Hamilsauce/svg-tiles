@@ -1,3 +1,5 @@
+import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapMeta } from '../../map.service.js';
+
 import { ref, computed, watch } from 'vue'
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js'
 import { router, RouteName } from '../../router/router.js'
@@ -86,7 +88,14 @@ export const AppCreateMapView = defineComponent(
         createdAt: Date.now(),
         updatedAt: Date.now()
       }
-      mapStore.setCurrentMap(mapDoc)
+      
+      const mapId = await storeMap(graphOut)
+      // const mapmeta = await loadMapMeta()
+      
+      
+      
+      mapStore.setCurrentMapById(mapId)
+      // mapStore.setCurrentMap(mapDoc)
       try {
         console.warn(
           'create: ', mapDoc
@@ -95,7 +104,7 @@ export const AppCreateMapView = defineComponent(
         router.push({
           name: RouteName.home,
           query: { mapID: 'fuk' } //mapStore.currentMap.value.id || 'no-id' }
-        })   
+        })
         if (openInEditor.value) {
           
         } else {

@@ -13,7 +13,6 @@ import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { sleep, template, utils, download, TwoWayMap } = ham;
 
 let hasInitViewBox = false;
-const mapStore = useMapStore();
 
 const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   graph.fromMap(mapData);
@@ -73,6 +72,7 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
 
 export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) => {
   hasInitViewBox = false;
+  const mapStore = useMapStore();
   
   const app = document.querySelector('#app');
   const appBody = document.querySelector('#app-body')
@@ -83,6 +83,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   
   const saveButton = document.querySelector('#save-map')
   const newButton = document.querySelector('#new-map')
+
   const mapNames = await loadMapMeta();
   
   [...mapInput.options].forEach((e) => {
@@ -99,7 +100,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     
     mapInput.add(opt)
   });
-  
+
   saveButton.addEventListener('click', async (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -108,7 +109,8 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     const mapSelection = e
     let mapId
     const graphOut = graph.toStorageFormat();
-    console.warn(graphOut)
+    console.warn({graphOut})
+    console.warn(mapStore.isMapSaved.value)
     if (!mapStore.isMapSaved.value) {
       delete graphOut.id
       

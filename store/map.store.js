@@ -9,56 +9,63 @@ const currentMap = ref(null);
 const maps = ref([]);
 
 
-const loadMap2 = () => loadMap
+// const loadMap2 = () => loadMap
 
 export const useMapStore = () => {
-  const isMapSaved = computed(() => !!currentMap.value.id && !currentMap.value.id.includes('TEMP_MAP'));
-  // console.warn(loadMap)
-  
+  const isMapSaved = computed(() => !!currentMap.value.id && !currentMap.value.id.includes('TEMP'));
+
   const setCurrentMap = (mapDoc) => {
-    const map = { ...MAP_DOC_TEMPLATE, ...mapDoc }
-    map.id = map.id ?? 'TEMP_MAP' + Date.now();
-    
-    currentMap.value = map;
+    currentMap.value = { ...MAP_DOC_TEMPLATE, ...mapDoc, id: mapDoc.id ?? `TEMP_MAP_${Date.now()}`, };
+
+    return currentMap.value.id;
   };
-  
+
   // const setCurrentMapById = async (mapId) => {
   //   const loaded = await loadMap2()(mapId);
   //   currentMap.value = loaded;
   // };
-  
-  const createMap = async (map) => {
-    currentMap.value = map;
-  };
-  
+
+  // const createMap = async (map) => {
+  //   currentMap.value = map;
+  // };
+
   const saveMap = async (map) => {
     // handle updating stored maps here too?
   };
-  
+
   const deleteMap = async (map) => {
     // handle updating stored maps here too?
   };
-  
-  const loadMap = async (id) => {
+
+  // const createMap = async (id) => {
+  //   console.warn({ id })
+
+  //   const loaded = await loadMap(id);
+  //   console.warn({ loaded })
+  //   return loaded
+  //   // handle updating stored maps here too?
+  // };
+
+  const createMap = async (id) => {
     console.warn({ id })
-    
+
     const loaded = await loadMap(id);
     console.warn({ loaded })
     return loaded
     // handle updating stored maps here too?
   };
-  
+
   const initMaps = async () => {
     maps.value = await loadMapMeta();
     // handle updating stored maps here too?
   };
-  
+
   const setCurrentMapById = async (mapId) => {
     const loaded = await loadMap(mapId);
     currentMap.value = loaded;
   };
-  
-  
+
+
   return {
     setCurrentMap,
     createMap,

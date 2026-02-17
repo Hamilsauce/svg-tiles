@@ -13,6 +13,8 @@ import {
   query,
   where,
   // select
+  runTransaction,
+  writeBatch,
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -26,6 +28,66 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+
+// import {
+//   collection,
+//   doc,
+//   getDocs,
+//   runTransaction
+// } from "firebase/firestore";
+
+// import { db } from "./firebase";
+
+// export const migrateMapsToSplitModel = async () => {
+//   const mapsSnap = await getDocs(collection(db, "maps"));
+
+//   for (const mapDoc of mapsSnap.docs) {
+//     await runTransaction(db, async (transaction) => {
+//       const mapRef = mapDoc.ref;
+//       const freshSnap = await transaction.get(mapRef);
+
+//       if (!freshSnap.exists()) return;
+
+//       const data = freshSnap.data();
+
+//       // If already migrated (paranoia guard)
+//       const mapIndexRef = doc(db, "mapIndex", mapDoc.id);
+//       const tileDataRef = doc(db, "tileData", mapDoc.id);
+
+//       const existingIndex = await transaction.get(mapIndexRef);
+//       if (existingIndex.exists()) {
+//         console.log(`Skipping ${mapDoc.id} (already migrated)`);
+//         return;
+//       }
+
+//       const mapIndexData = {
+//         id: mapDoc.id,
+//         name: data.name ?? "Untitled",
+//         meta: data.meta ?? {},
+//         width: data.width,
+//         height: data.height,
+//         updated: data.updated ?? Date.now(),
+//       };
+
+//       const tileDataDoc = {
+//         id: mapDoc.id,
+//         width: data.width,
+//         height: data.height,
+//         tileData: data.tileData ?? {},
+//       };
+
+//       transaction.set(mapIndexRef, mapIndexData);
+//       transaction.set(tileDataRef, tileDataDoc);
+//       transaction.delete(mapRef);
+//     });
+
+//     console.log(`Migrated ${mapDoc.id}`);
+//   }
+
+//   console.log("Migration complete.");
+// };
+
 
 export const dbGet = async (collectionPath, docId) => {
   const ref = doc(db, collectionPath, docId);
@@ -59,7 +121,7 @@ export const dbGetAll = async (collectionPath, options = {}) => {
   const q = options.select ?
     query(col, select(...options.select)) :
     col;
-  
+
   const snap = await getDocs(q);
   return snap.docs.map(doc => ({
     id: doc.id,
@@ -70,6 +132,7 @@ export const dbGetAll = async (collectionPath, options = {}) => {
 export const getFieldOnly = async (coll, fieldName) => {
   const q = query(collection(db, coll));
   const snapshot = await getDocs(q);
+
   return snapshot.docs.map(doc => ({
     id: doc.id,
     [fieldName]: doc.get(fieldName),
@@ -79,18 +142,19 @@ export const getFieldOnly = async (coll, fieldName) => {
 export const getFields = async (coll, fieldNames = []) => {
   const q = query(collection(db, coll));
   const snapshot = await getDocs(q);
-  
-  return snapshot.docs.map((docRef) => {
-    return fieldNames.reduce((acc, fieldName) => {
-      return { ...acc, [fieldName]: docRef.get(fieldName) }
-    }, { id: docRef.id });
-    
-    // return {
-    //   id: docRef.id,
-    //   [fieldName]: docRef.get(fieldName),
-    // }
-  });
-};
+
+  return snapshot.docs.map((docRef) => fieldNames.reduce((acc, fieldName) => ({
+    ...acc,
+    [fieldName]: docRef.get(fieldName)
+  }), { id: docRef.id }));
+}
+
+export const mapSyncHelpers = {
+  writeBatch,
+  collection,
+  doc,
+  db
+}
 // export const dbQuery = async (collectionPath, conditions = [], selectedFields = null) => {
 //   let q = collection(db, collectionPath);
 //   const constraints = conditions.map(([field, op, value]) => where(field, op, value));

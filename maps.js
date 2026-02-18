@@ -1,4 +1,4 @@
-import { previewGrid } from './lib/procedural-gen.js'
+import { previewGrid } from './lib/procedural-gen.js';
 export const MAP_DOC_TEMPLATE = {
   // name: 'Untitled_' + Date.now(),
   meta: {
@@ -9,25 +9,19 @@ export const MAP_DOC_TEMPLATE = {
   width: 16,
   height: 16,
   tileData: {},
-}
+};
 
 export const mapStorageFormatter = ({ name, tiles, tileData, meta, width, height }) => {
-  // const isGrid = Array.isArray(tiles[0])
   height = height ?? tiles.length;
   width = width ?? tiles[0].length;
-  
-  // tiles = !isGrid ? tiles : tiles.reduce((flattened, row, i) => {
-  //   return [...flattened, ...row]
-  // }, []);
-  
+
   return {
     name,
     tileData,
-    // tiles,
     width,
     height,
     meta,
-  }
+  };
 };
 
 export const SPIRAL1 = {
@@ -65,7 +59,7 @@ export const SPIRAL1 = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3]
   ],
-}
+};
 
 // previewGrid(SPIRAL1.tiles)
 
@@ -81,7 +75,7 @@ export const BABY_MAP_6X6 = {
   width: 4,
   height: 6,
   tiles: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-}
+};
 
 export const BLANK_MAP_9X15_1 = {
   name: 'Blank Map 9x15',
@@ -108,7 +102,7 @@ export const BLANK_MAP_9X15_1 = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
-}
+};
 
 export const BLANK_MAP_16X16 = mapStorageFormatter({
   name: 'Untitled_' + Date.now(),
@@ -119,7 +113,10 @@ export const BLANK_MAP_16X16 = mapStorageFormatter({
   },
   width: 16,
   height: 16,
-  tileData: {},
+  tileData: {
+    '1_1': { tileType: 'start' },
+    '2_2': { tileType: 'teleport', target: { x: 15, y: 15 } }
+  },
   tiles: [
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -138,7 +135,7 @@ export const BLANK_MAP_16X16 = mapStorageFormatter({
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   ],
-})
+});
 
 export const MAP_9X15_1 = {
   name: 'Maze Map 9x15 1',
@@ -165,7 +162,7 @@ export const MAP_9X15_1 = {
     [1, 0, 1, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
   ],
-}
+};
 
 export const BIG_ASS_MAP = {
   name: 'Big Ass Map',
@@ -202,7 +199,7 @@ export const BIG_ASS_MAP = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
   ]
-}
+};
 
 export const suk = {
   name: 'suk',
@@ -243,7 +240,7 @@ export const suk = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0]
   ],
-}
+};
 
 export const maps = {
   SPIRAL1,
@@ -252,8 +249,8 @@ export const maps = {
   MAP_9X15_1,
   BABY_MAP_6X6,
   suk
-}
+};
 
 const isObjectEmpty = (obj) => {
-  return Object.keys(obj).length === 0
+  return Object.keys(obj).length === 0;
 };

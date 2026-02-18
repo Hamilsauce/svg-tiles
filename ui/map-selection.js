@@ -1,7 +1,7 @@
 import { ref, computed, watch } from 'vue';
 
 import { BLANK_MAP_16X16, mapStorageFormatter } from '../maps.js';
-import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapMeta } from '../map.service.js';
+import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../map.service.js';
 
 import { copyTextToClipboard } from '../lib/utils.js';
 import { useMapStore } from '../store/map.store.js';
@@ -84,14 +84,14 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   const saveButton = document.querySelector('#save-map');
   const newButton = document.querySelector('#new-map');
   
-  const mapNames = await loadMapMeta();
+  const mapNames = await loadMapIndex();
   
   [...mapInput.options].forEach((e) => {
     e.remove();
   });
   
   const blankOpt = { id: null, name: '' };
-  const defaultOpt = { id: 'zYCxQlIXijeHjuwqCK7A', name: 'suk' };
+  const defaultOpt = { id: '', name: '' };
   
   [defaultOpt, ...mapNames].forEach((m) => {
     const opt = document.createElement('option');
@@ -113,8 +113,9 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     if (!mapStore.isMapSaved.value) {
       delete graphOut.id;
     }
+    console.warn('STORE', { graphOut, currindex: mapStore.currentMapIndex.value })
     
-    mapId = await storeMap(graphOut);
+    mapId = await storeMap({ ...graphOut, ...(mapStore.currentMapIndex.value || {}) });
     
     copyTextToClipboard(graphOut);
     
@@ -131,7 +132,7 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   
   watch(mapStore.currentMap, (newMap, oldMap) => {
     if (newMap && oldMap && newMap.id === oldMap.id) return;
-    
+    console.warn('watcher', newMap)
     renderMap(newMap, svgCanvas, graph, actor1, selectionBox);
   });
   
@@ -141,9 +142,9 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     tap(async ({ target }) => {
       const sel = target.selectedOptions[0].value;
       
-      const loadedMap = await loadMap(sel);
+      // const loadedMap = await loadMap(sel);
       
-      mapStore.setCurrentMap(loadedMap);
+      mapStore.setCurrentMapById(sel);
     }),
   ).subscribe();
   

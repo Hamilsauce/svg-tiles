@@ -27,21 +27,39 @@ body {
   background-image: linear-gradient(45deg, #465FA1, #1182B9),
     linear-gradient(to right, rgba(30, 75, 115, 1), #352F34),
     linear-gradient(to right, rgba(30, 75, 115, 1), #2F3135);
-  background-blend-mode: initial,
-    color-dodge,
-    difference;
+  /* background-blend-mode: overlay; */
+  /* background-blend-mode: color-dodge; */
+  background-blend-mode: color-dodge, luminosity, difference;
   background-repeat: no-repeat,
     no-repeat,
     no-repeat;
   background-position: bottom right,
     left,
     right;
+  transition: 0.5s ease;
+  
 }
+
+.bg-blend-overlay {
+  background-blend-mode: soft-light;
+  /* background-blend-mode: overlay, color-dodge; */
+  
+  transition: 0.5s ease;
+  
+}
+
+/* .gradient.bg-blend-overlay, .gradient, .bg-blend-overlay {
+  background-blend-mode: initial;
+} */
+/* .bg-blend-overlay {
+  background-blend-mode: overlay,
+    color-dodge,
+    difference;
+} */
 
 #svg-canvas-host {
   width: 100%;
   height: 100%;
-
 }
 
 #canvas {
@@ -55,6 +73,11 @@ body {
   stroke: #FFFFFF80;
   stroke-width: 0.2;
   filter: drop-shadow(0 0px 1.5px #2F2F2F65);
+}
+
+#map-name-text {
+  font-size: 12px;
+  font-weight: 400;
 }
 
 #tile-layer {
@@ -87,7 +110,7 @@ body {
   pointer-events: auto;
   touch-action: none;
   width: 100%;
-
+  
   * {
     /* pointer-events: none !important; */
     /* touch-action: none; */
@@ -101,7 +124,7 @@ body {
   height: 30;
   /* touch-action: none; */
   pointer-events: auto;
-
+  
 }
 
 #context-menu-container[data-show=false] {
@@ -113,9 +136,9 @@ body {
   filter: drop-shadow(0 3px 6px #2A2A2AC2);
   overflow-y: hidden;
   overflow-x: auto;
-
+  
   pointer-events: auto;
-
+  
 }
 
 /* .context-menu {
@@ -136,7 +159,7 @@ body {
   width: 100px;
   width: 100%;
   overflow-x: auto;
-
+  
 }
 
 .menu-scroll {
@@ -148,7 +171,7 @@ body {
   scrollbar-width: thin;
   /* Firefox */
   overflow-x: scroll;
-
+  
 }
 
 .context-menu-list {
@@ -170,16 +193,16 @@ body {
   /* width: 200px; */
   width: 100px;
   width: 100%;
-
+  
   display: flex;
   flex-direction: row;
-
+  
   gap: 2px;
   overflow-x: scroll;
   overflow-y: hidden;
   /* white-space: nowrap; */
   pointer-events: auto !important;
-
+  
   /* scrollbar-width: thin; */
 }
 
@@ -191,7 +214,7 @@ body {
   gap: 0px;
   /* width: 100%; */
   /* width: 200px; */
-
+  
   width: fit-content;
   padding: 4px;
   background: #FFFFFF;
@@ -212,11 +235,11 @@ body {
   stroke: #0006FFC9;
   stroke-width: 0.075;
   filter: brightness(1.4) drop-shadow(0 0 0.035px #3B3B3B73);
-
+  
 }
 
-#edge-line-arrow{
-  path{
+#edge-line-arrow {
+  path {
     fill: #0006FF;
   }
 }
@@ -234,5 +257,5 @@ body {
   background-color: #f0f0f0;
   word-wrap: nowrap;
   white-space: nowrap;
-
+  
 }

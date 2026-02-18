@@ -1,4 +1,4 @@
-import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapMeta } from '../../map.service.js';
+import { storeMaps, storeMap, updateMap, loadMap, loadMaps, clearMaps, loadMapIndex } from '../../map.service.js';
 
 import { ref, computed, watch } from 'vue'
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js'
@@ -90,7 +90,7 @@ export const AppCreateMapView = defineComponent(
       }
       
       const mapId = await storeMap(graphOut)
-      // const mapmeta = await loadMapMeta()
+      // const mapmeta = await loadMapIndex()
       
       
       

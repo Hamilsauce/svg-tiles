@@ -106,25 +106,22 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    const mapSelection = e;
     let mapId;
+
     const graphOut = graph.toStorageFormat();
+
     console.warn({ graphOut });
     console.warn(mapStore.isMapSaved.value);
+
     if (!mapStore.isMapSaved.value) {
       delete graphOut.id;
-
     }
 
     mapId = await storeMap(graphOut);
 
-    // if (!!graphOut.id) {
-    //   mapId = await updateMap(graphOut);
-    // } else {
-    //   mapId = await storeMap(graphOut);
-    // }
-
     copyTextToClipboard(graphOut);
+
+    return mapId;
   });
 
   // newButton.addEventListener('click', async (e) => {

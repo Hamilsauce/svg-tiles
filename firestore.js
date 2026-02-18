@@ -15,6 +15,7 @@ import {
   // select
   runTransaction,
   writeBatch,
+  deleteField,
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -28,16 +29,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-
-// import {
-//   collection,
-//   doc,
-//   getDocs,
-//   runTransaction
-// } from "firebase/firestore";
-
-// import { db } from "./firebase";
 
 // export const migrateMapsToSplitModel = async () => {
 //   const mapsSnap = await getDocs(collection(db, "maps"));
@@ -153,20 +144,6 @@ export const mapSyncHelpers = {
   writeBatch,
   collection,
   doc,
-  db
+  db,
+  deleteField,
 }
-// export const dbQuery = async (collectionPath, conditions = [], selectedFields = null) => {
-//   let q = collection(db, collectionPath);
-//   const constraints = conditions.map(([field, op, value]) => where(field, op, value));
-
-//   if (selectedFields) constraints.push(select(...selectedFields));
-
-//   q = query(q, ...constraints);
-
-//   const snap = await getDocs(q);
-
-//   return snap.docs.map(doc => ({
-//     id: doc.id,
-//     ...doc.data()
-//   }));
-// };

@@ -8,9 +8,6 @@ import { MAP_DOC_TEMPLATE } from '../maps.js';
 const currentMap = ref(null);
 const maps = ref([]);
 
-
-// const loadMap2 = () => loadMap
-
 export const useMapStore = () => {
   const isMapSaved = computed(() => !!currentMap.value.id && !currentMap.value.id.includes('TEMP'));
 
@@ -20,15 +17,6 @@ export const useMapStore = () => {
     return currentMap.value.id;
   };
 
-  // const setCurrentMapById = async (mapId) => {
-  //   const loaded = await loadMap2()(mapId);
-  //   currentMap.value = loaded;
-  // };
-
-  // const createMap = async (map) => {
-  //   currentMap.value = map;
-  // };
-
   const saveMap = async (map) => {
     // handle updating stored maps here too?
   };
@@ -36,15 +24,6 @@ export const useMapStore = () => {
   const deleteMap = async (map) => {
     // handle updating stored maps here too?
   };
-
-  // const createMap = async (id) => {
-  //   console.warn({ id })
-
-  //   const loaded = await loadMap(id);
-  //   console.warn({ loaded })
-  //   return loaded
-  //   // handle updating stored maps here too?
-  // };
 
   const createMap = async (id) => {
     console.warn({ id })
@@ -57,7 +36,6 @@ export const useMapStore = () => {
 
   const initMaps = async () => {
     maps.value = await loadMapMeta();
-    // handle updating stored maps here too?
   };
 
   const setCurrentMapById = async (mapId) => {

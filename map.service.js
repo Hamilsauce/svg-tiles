@@ -1,7 +1,7 @@
 import { mapSyncHelpers, dbAdd, dbGet, dbGetAll, dbUpdate, getFields, dbDelete } from './firestore.js';
 import { maps, mapStorageFormatter } from './maps.js';
 
-const { collection, doc, writeBatch, db } = mapSyncHelpers;
+const { collection, doc, writeBatch, db, deleteField } = mapSyncHelpers;
 
 const cache = new Map();
 
@@ -31,7 +31,7 @@ export const storeMap2 = async (mapToStore) => {
 };
 
 export const storeMap = async (mapToStore) => {
-  const { tileData, ...formatted } = mapStorageFormatter(mapToStore);
+  const { tileData, deletedAddresses, ...formatted } = mapToStore;
 
   const id = mapToStore?.id ?? doc(collection(db, "mapIndex")).id;
 
@@ -40,42 +40,34 @@ export const storeMap = async (mapToStore) => {
 
   const batch = writeBatch(db);
 
-  batch.set(
-    mapIndexRef,
-    { ...formatted, id },
-    { merge: true }
-  );
+  batch.set(mapIndexRef, { ...formatted, id }, { merge: true });
 
   batch.set(
     tileDataRef,
-    {
-      id,
-      tileData,
-      width: formatted.width,
-      height: formatted.height,
-    },
+    { id, width: formatted.width, height: formatted.height },
     { merge: true }
   );
+
+  // build nested updates for adds/updates + deletes
+  const tileUpdates = {};
+
+  for (const [address, tile] of Object.entries(tileData ?? {})) {
+    tileUpdates[`tileData.${address}`] = tile;
+  }
+
+  for (const address of deletedAddresses) {
+    tileUpdates[`tileData.${address}`] = deleteField();
+  }
+
+  // apply if there's anything to change
+  if (Object.keys(tileUpdates).length) {
+    batch.update(tileDataRef, tileUpdates);
+  }
 
   await batch.commit();
 
   return id;
 };
-// export const storeMap = async (mapToStore) => {
-//   const { tileData, ...formatted } = mapStorageFormatter(mapToStore);
-//   console.warn({ formatted, tileData })
-
-//   const id = await dbAdd('mapIndex', formatted);
-
-//   const res = await dbAdd('tileData', {
-//     id,
-//     tileData,
-//     width: formatted.width,
-//     height: formatted.height,
-//   });
-
-//   return id;
-// }
 
 export const storeMaps = async (mapsToStore = maps) => {
   const ids = Object.values(mapsToStore).map(async (map, i) => {

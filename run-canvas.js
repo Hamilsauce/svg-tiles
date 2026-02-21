@@ -11,7 +11,7 @@ import { useAppState } from './store/app.store.js';
 
 // setTimeout(() => {
 //   const canvasEl = document.querySelector('#canvas');
-  
+
 //   setInterval(() => {
 //     console.warn('toggle', canvasEl.className)
 //     canvasEl.classList.toggle('bg-blend-overlay')
@@ -561,6 +561,7 @@ export const runCanvas = async () => {
   
   svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
   
+  
   contextMenu.addEventListener('click', e => {
     e.preventDefault();
     e.stopPropagation();
@@ -582,39 +583,50 @@ export const runCanvas = async () => {
       y: +selectedTile.dataset.y,
     });
     
+    console.warn({
+      selectedOptionType,
+      selectedOptionValue,
+      node,
+      e: e.type,
+      targ: e.target,
+    })
+    
     if (selectedOptionType === 'tile-action') {
       
       if (selectedOptionValue === 'link-teleport') {
         contextMenu.dataset.show = false;
         isSelectingLinkTile = true;
         
+        
         const handleTileLinkSelect = (e) => {
-          const linkTarget = e.target.closest('.tile')
+          console.warn({ e })
+          const linkTarget = e.detail.target.closest('.tile')
+          
           const nodeToLink = graph.getNodeAtPoint({
             x: +linkTarget.dataset.x,
             y: +linkTarget.dataset.y,
           });
           
-          nodeToLink.setType('teleport');
+          // nodeToLink.setType('teleport');
           
           node.linkToNode({ x: nodeToLink.x, y: nodeToLink.y });
           
-          if (!nodeToLink.linkedNodeAddress) {
-            nodeToLink.linkToNode({ x: node.x, y: node.y });
-          }
+          // nodeToLink.linkToNode({ x: node.x, y: node.y });
+          
+          // if (!nodeToLink.linkedNodeAddress) {}
+          console.warn({ node, nodeToLink })
           
           isSelectingLinkTile = false;
-          
           svgCanvas.removeEventListener('tile:click', handleTileLinkSelect);
           
           return;
         }
         
+        
         svgCanvas.addEventListener('tile:click', handleTileLinkSelect);
         return;
       }
     }
-    
     else if (selectedOptionType === 'tile-type') {
       node.setType(selectedTileTypeName);
       

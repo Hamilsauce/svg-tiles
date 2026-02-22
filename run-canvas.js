@@ -147,7 +147,7 @@ export const runCanvas = async () => {
     return range;
   };
   
-  const ANIM_RATE = 145;
+  const ANIM_RATE = 115;
   let selectedRange = [];
   const audioNote1 = (new AudioNote(audioEngine));
   
@@ -257,19 +257,18 @@ export const runCanvas = async () => {
     return pitchToFrequency(pitch.pitch)
   }
   
-  const getDynamicTone = (x, y) => {
+  const getDynamicTone = (x, y, dir = 1) => {
     const mod = 0 //x % 2 ? -1 : y % 4 ? 1 : 0
     const pitchClass = getTileDegree(x, harmonicCxt.notes.length)
     const octave = getTileOctave(y + mod, harmonicCxt.notes.length)
     
-    const pitch = `${pitchClass}${octave}`;
+    const pitch = `${pitchClass}${octave + dir}`;
     
     return pitchToFrequency(pitch)
   }
   
   const toTone = (x, y) => (x % 2 && y % 2) ?
-    getDynamicTone(x, y) :
-    // getChordNotes(x, y)
+    getDynamicTone(x, y, -1) :
     getTileTone(x, y, )
   
   
@@ -378,8 +377,8 @@ export const runCanvas = async () => {
           freq = freq > 1600 ? 1200 - freq : freq;
           freq = curr.tileType === 'teleport' ? freq + 250 : freq;
           
-          let vel = (0.5 - (pointer / bfsPath.length));
-          vel = vel >= 0.5 ? 0.5 : vel;
+          let vel = (0.4 - (pointer / bfsPath.length));
+          vel = vel >= 0.4 ? 0.4 : vel;
           vel = vel <= 0.075 ? 0.075 : vel;
           
           const dur = 2 / bfsPath.length;
@@ -390,7 +389,7 @@ export const runCanvas = async () => {
           audioNote1
             .at(audioEngine.currentTime)
             .frequencyHz(freq)
-            .duration(0.1)
+            .duration(0.095)
             .velocity(vel).play();
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);

@@ -1,3 +1,0 @@
-# Selection Box Behavior
-
-## 

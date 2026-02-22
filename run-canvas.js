@@ -1,7 +1,7 @@
 import { Graph, TILE_TYPE_INDEX } from './lib/graph.model.js';
 import { SVGCanvas } from './canvas/SVGCanvas.js';
 import { maps } from './maps.js';
-import { getTileSelector } from './selection-box/index.js';
+import { getTileSelector } from 'https://hamilsauce.github.io/svg-range-selector/tile-selector.js';
 import { initMapControls } from './ui/map-selection.js';
 import { scheduleOscillator, AudioNote, audioEngine } from './audio/index.js';
 import { TransformList } from './canvas/TransformList.js';

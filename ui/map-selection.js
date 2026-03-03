@@ -30,6 +30,17 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
   
   svgCanvas.layers.tile.innerHTML = '';
   
+  const tilesTotal = graph.width * graph.height
+  console.log({ tilesTotal })
+  if (tilesTotal > 512) {
+    svgCanvas.layers.tile.classList.add('no-shadow')
+    
+  } else {
+    svgCanvas.layers.tile.classList.remove('no-shadow')
+    
+  }
+  svgCanvas.layers.tile.innerHTML = '';
+  
   graph.nodes.forEach(({ x, y, tileType }, rowNumber) => {
     if (tileType === 'start') {
       actor1.setAttribute('transform', `translate(${x},${y})`);

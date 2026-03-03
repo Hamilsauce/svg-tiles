@@ -34,7 +34,7 @@ export const updateMap = async (mapToStore) => {
 };
 
 export const storeMap = async (mapToStore) => {
-  const { tileData, deletedAddresses, ...formatted } = mapToStore;
+  const { tileData, ...formatted } = mapToStore;
   const id = mapToStore?.id ?? doc(collection(db, "mapIndex")).id;
   
   const mapIndexRef = doc(db, "mapIndex", id);
@@ -54,25 +54,10 @@ export const storeMap = async (mapToStore) => {
     tileDataRef, {
       id,
       width: formatted.width,
-      height: formatted.height
-    }, { merge: true }
+      height: formatted.height,
+      tileData: tileData
+    },
   );
-  
-  // build nested updates for adds/updates + deletes
-  const tileUpdates = {};
-  
-  for (const [address, tile] of Object.entries(tileData ?? {})) {
-    tileUpdates[`tileData.${address}`] = tile;
-  }
-  
-  for (const address of deletedAddresses) {
-    tileUpdates[`tileData.${address}`] = deleteField();
-  }
-  
-  // apply if there's anything to change
-  if (Object.keys(tileUpdates).length) {
-    batch.update(tileDataRef, tileUpdates);
-  }
   
   await batch.commit();
   

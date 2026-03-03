@@ -3,6 +3,7 @@ import { defineComponent, getTemplate } from '../lib/vue-helpers.js';
 import { useAppState } from '../store/app.store.js';
 import { useMapStore } from '../store/map.store.js';
 import { runCanvas } from '../run-canvas.js';
+import { AudioClockLoop } from '../lib/loop-engine.js'
 
 export const SVGCanvasHost = defineComponent(
   getTemplate('svg-canvas-host'),
@@ -16,7 +17,19 @@ export const SVGCanvasHost = defineComponent(
     let tileLayer; // = scene.querySelector('#tile-layer');
     let objectLayer; // = scene.querySelector('#object-layer');
     // const selectionBox = getTileSelector(objectLayer);
-    
+    const routine1 = (dt, now) =>{
+      console.warn('routine 1', dt, now)
+    }
+ 
+    const render = (dt, now) =>{
+      console.warn('render', dt, now)
+    }
+ 
+    const loopEngine = new AudioClockLoop({
+      routines:[routine1],
+      render,
+    })
+    // loopEngine.start()
     
     const handleRunningToggle = () => {
       isRunning.value = !isRunning.value;

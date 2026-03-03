@@ -21,39 +21,112 @@ import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_F
 // }, 2000)
 
 
+const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
+const { fromEvent } = rxjs;
+const { tap } = rxjs.operators;
+
+const useTemplate = (templateName, options = {}) => {
+  const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
+  
+  delete el.dataset.template;
+  
+  if (options.dataset) Object.assign(el.dataset, options.dataset);
+  
+  if (options.id) el.id = options.id;
+  
+  if (options.fill) el.style.fill = options.fill;
+  
+  return el;
+};
+
+const domPoint = (element, x, y) => {
+  return new DOMPoint(x, y).matrixTransform(
+    element.getScreenCTM().inverse()
+  );
+};
+
+const getAspectRatio = (svgCanvas) => {
+  const { width, height } = svgCanvas.getBoundingClientRect();
+  
+  return width / height;
+};
+
+
+const computeArrowEndpoint = (origin, tileCenter, tileSize = [1, 1]) => {
+  const [ox, oy] = origin;
+  const [tx, ty] = tileCenter;
+  const [tw, th] = tileSize;
+  
+  const dx = tx - ox;
+  const dy = ty - oy;
+  const dist = Math.hypot(dx, dy);
+  const ux = dx / dist;
+  const uy = dy / dist;
+  
+  const offset = Math.min(
+    (tw / 2) / Math.abs(ux),
+    (th / 2) / Math.abs(uy)
+  );
+  
+  const ex = tx - ux * offset;
+  const ey = ty - uy * offset;
+  
+  return [ex, ey];
+};
+
+const createEdgeLine = (pt1, pt2) => {
+  const line = useTemplate('edge-line');
+  const lineEl = line.querySelector('line');
+  const lineHandle = line.querySelector('circle');
+  const [endX, endY] = computeArrowEndpoint(
+    [pt1.x + 0.5, pt1.y + 0.5],
+    [pt2.x + 0.5, pt2.y + 0.5]
+  );
+  
+  lineEl.setAttribute('x1', pt1.x + 0.5);
+  lineEl.setAttribute('y1', pt1.y + 0.5);
+  lineEl.setAttribute('x2', endX);
+  lineEl.setAttribute('y2', endY);
+  lineHandle.setAttribute('cx', endX);
+  lineHandle.setAttribute('cy', endY);
+  
+  // line.addEventListener('pointermove', e => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  
+  //   const targ = e.currentTarget
+  //   const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
+  //   const [newEndX, newEndY] = computeArrowEndpoint(
+  //     [pt1.x + 0.5, pt1.y + 0.5],
+  //     [newPoint.x + 0.5, newPoint.y + 0.5]
+  //   );
+  
+  //   line.firstElementChild.setAttribute('x2', newEndX);
+  //   line.firstElementChild.setAttribute('y2', newEndY);
+  // });
+  
+  return line;
+};
+
+
+
+
+const fireAudioNote = (freq, vel, dur = 0.15) => (new AudioNote(audioEngine.ctx)
+  .at(audioEngine.now)
+  .frequencyHz(freq)
+  .duration(dur)
+  .velocity(vel).play()
+  // .at(audioEngine.currentTime+0.1)
+  // .velocity(0.005).play()
+);
+
+const ANIM_RATE = 105;
+
+
 export const runCanvas = async () => {
   const { isRunning, setRunning } = useAppState();
   
-  const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
-  const { fromEvent } = rxjs;
-  const { tap } = rxjs.operators;
-  
-  const useTemplate = (templateName, options = {}) => {
-    const el = document.querySelector(`[data-template="${templateName}"]`).cloneNode(true);
-    
-    delete el.dataset.template;
-    
-    if (options.dataset) Object.assign(el.dataset, options.dataset);
-    
-    if (options.id) el.id = options.id;
-    
-    if (options.fill) el.style.fill = options.fill;
-    
-    return el;
-  };
-  
-  const domPoint = (element, x, y) => {
-    return new DOMPoint(x, y).matrixTransform(
-      element.getScreenCTM().inverse()
-    );
-  };
-  
-  const getAspectRatio = (svgCanvas) => {
-    const { width, height } = svgCanvas.getBoundingClientRect();
-    
-    return width / height;
-  };
-  
+  let selectedRange = [];
   let getSelectedRange = (tileLayer = document.querySelector('#tile-layer')) => [...tileLayer.querySelectorAll('.tile[data-selected="true"]')];
   
   const tileAt = (x, y) => tileLayer.querySelector(`.tile[data-y="${y}"][data-x="${x}"]`);
@@ -62,62 +135,6 @@ export const runCanvas = async () => {
     getSelectedRange().forEach((t, i) => {
       t.dataset.selected = false;
     });
-  };
-  
-  const computeArrowEndpoint = (origin, tileCenter, tileSize = [1, 1]) => {
-    const [ox, oy] = origin;
-    const [tx, ty] = tileCenter;
-    const [tw, th] = tileSize;
-    
-    const dx = tx - ox;
-    const dy = ty - oy;
-    const dist = Math.hypot(dx, dy);
-    const ux = dx / dist;
-    const uy = dy / dist;
-    
-    const offset = Math.min(
-      (tw / 2) / Math.abs(ux),
-      (th / 2) / Math.abs(uy)
-    );
-    
-    const ex = tx - ux * offset;
-    const ey = ty - uy * offset;
-    
-    return [ex, ey];
-  };
-  
-  const createEdgeLine = (pt1, pt2) => {
-    const line = useTemplate('edge-line');
-    const lineEl = line.querySelector('line');
-    const lineHandle = line.querySelector('circle');
-    const [endX, endY] = computeArrowEndpoint(
-      [pt1.x + 0.5, pt1.y + 0.5],
-      [pt2.x + 0.5, pt2.y + 0.5]
-    );
-    
-    lineEl.setAttribute('x1', pt1.x + 0.5);
-    lineEl.setAttribute('y1', pt1.y + 0.5);
-    lineEl.setAttribute('x2', endX);
-    lineEl.setAttribute('y2', endY);
-    lineHandle.setAttribute('cx', endX);
-    lineHandle.setAttribute('cy', endY);
-    
-    // line.addEventListener('pointermove', e => {
-    //   e.stopPropagation();
-    //   e.preventDefault();
-    
-    //   const targ = e.currentTarget
-    //   const newPoint = domPoint(line.parentElement, e.clientX, e.clientY)
-    //   const [newEndX, newEndY] = computeArrowEndpoint(
-    //     [pt1.x + 0.5, pt1.y + 0.5],
-    //     [newPoint.x + 0.5, newPoint.y + 0.5]
-    //   );
-    
-    //   line.firstElementChild.setAttribute('x2', newEndX);
-    //   line.firstElementChild.setAttribute('y2', newEndY);
-    // });
-    
-    return line;
   };
   
   const getRange = ({ start, end }) => {
@@ -137,19 +154,6 @@ export const runCanvas = async () => {
     
     return range;
   };
-  
-  const ANIM_RATE = 105;
-  let selectedRange = [];
-  const fireAudioNote = (freq, vel, dur = 0.15) => (new AudioNote(audioEngine.ctx)
-    .at(audioEngine.now)
-    .frequencyHz(freq)
-    .duration(dur)
-    .velocity(vel).play()
-    // .at(audioEngine.currentTime+0.1)
-    // .velocity(0.005).play()
-    
-    
-  );
   
   let audioNote1 // = (new AudioNote(audioEngine));
   
@@ -370,6 +374,7 @@ export const runCanvas = async () => {
         return preVelIndex;
       };
       
+      
       let intervalHandle = setInterval(async () => {
         curr = bfsPath[pointer];
         
@@ -378,7 +383,6 @@ export const runCanvas = async () => {
             .at(audioEngine.currentTime + 0.33)
             .velocity(0.05)
             .play();
-          
         }
         
         if (!curr) {
@@ -404,16 +408,12 @@ export const runCanvas = async () => {
             const dur = 2 / bfsPath.length;
             const startMod = ((pointer || 1) * 0.01);
             
-            
             try {
               freq = toTone(curr.x, curr.y)
               audioNote1 = fireAudioNote(freq, vel)
-              
-              
             } catch (e) {
               console.error('coukdbt play audio note')
             }
-            
           }
           
           const el = svgCanvas.querySelector(`.tile[data-x="${curr.x}"][data-y="${curr.y}"]`);
@@ -571,8 +571,6 @@ export const runCanvas = async () => {
       
       if (selectedNode.target) {
         const line = createEdgeLine(selectedNode, selectedNode.target);
-        // $$
-        
         line.addEventListener('pointermove', e => {
           e.stopPropagation();
           e.preventDefault();
@@ -605,7 +603,6 @@ export const runCanvas = async () => {
       lastItem.scrollIntoView();
       contextMenu.dataset.show = true;
       setTimeout(() => { firstItem.scrollIntoView({ behavior: 'smooth' }); }, 500);
-      
     }
     
     svgCanvas.addEventListener('tile:click', blurContextMenu);
@@ -705,12 +702,7 @@ export const runCanvas = async () => {
   
   // });
   
-  contextMenu.addEventListener('pointermove', e => {
-    // e.stopPropagation();
-  });
-  
   svgCanvas.layers.tile.addEventListener('contextmenu', handleEditTileClick);
-  
   
   contextMenu.addEventListener('click', e => {
     e.preventDefault();
@@ -744,8 +736,7 @@ export const runCanvas = async () => {
         
         return;
       }
-    }
-    else if (selectedOptionType === 'tile-type') {
+    } else if (selectedOptionType === 'tile-type') {
       node.setType(selectedTileTypeName);
       
       selectedTile.dataset.tileType = selectedTileTypeName;

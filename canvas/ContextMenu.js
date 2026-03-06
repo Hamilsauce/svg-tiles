@@ -73,7 +73,7 @@ export class ContextMenu extends CanvasObject {
     this.dom.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
-
+      
       const targ = e.target.closest('li');
       if (!targ) return;
       
@@ -81,7 +81,9 @@ export class ContextMenu extends CanvasObject {
       const selectedOptionType = targ.dataset.type;
       const selectedTileTypeName = targ.dataset.value;
       
-      targ.dataset.active = true;
+      if (selectedOptionType === 'tile-action') {
+        targ.dataset.active = true;
+      }
       
       this.emit('tile-action', {
         type: selectedOptionType === 'tile-action' ? selectedOptionValue : selectedTileTypeName
@@ -96,7 +98,6 @@ export class ContextMenu extends CanvasObject {
   
   onMenuClick(e) {
     const value = e.target.dataset.value;
-    // this.dispatchEvent('');
   }
   
   toggleActions(v = null) {
@@ -110,8 +111,4 @@ export class ContextMenu extends CanvasObject {
   }
   
   get menuItems() { return [...this.getEls('li')]; };
-  
-  // get prop() { return this.#prop; };
-  
-  // set prop(newValue) { this._prop = newValue; };
 }

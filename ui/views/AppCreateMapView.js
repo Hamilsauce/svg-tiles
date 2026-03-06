@@ -86,7 +86,6 @@ export const AppCreateMapView = defineComponent(
         // startPlacement: startPlacement.value,
         // exitPlacement: exitPlacement.value,
         tileData: {},
-        deletedAddresses: [],
         meta: { created: Date.now(), author: 'slamster' },
         updated: Date.now()
       }

@@ -1,7 +1,8 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js';
 import { router, RouteName } from '../../router/router.js'
 import { useMapStore } from '../../store/map.store.js';
+import { AppMapListItem } from './AppMapListItem.js'
 
 const PINNED_MAP_ID = 'AV1lKxUDArOcODrZAgaQ'; // diagnal
 
@@ -11,16 +12,14 @@ export const AppMapList = defineComponent(
     const mapStore = useMapStore();
     const maps = mapStore.mapIndex
     const mapList = computed(() => [...maps.values()].sort((a, b) => a.updated < b.updated || b.id === PINNED_MAP_ID ? 1 : -1))
-    const editingId = ref(null);
+    const selectedId = ref(null);
     
     const handleNewMap = () => {
       router.push({ name: RouteName.createMap })
     };
     
     const handleMapClick = (id) => {
-      if (editingId.value) return
-      
-      if (id) {
+      if (id && !selectedId.value) {
         router.push({
           name: RouteName.home,
           params: { id },
@@ -28,10 +27,12 @@ export const AppMapList = defineComponent(
       }
     };
     
-    const handleMapContextMenu = (id) => {
-      editingId.value = id;
-      
-      if (id) {
+    const handleMapSelect = (id) => {
+      selectedId.value = id;
+    };
+    
+    const handleMapEdit = (id) => {
+      if (selectedId.value === id) {
         router.push({
           name: RouteName.mapProps,
           params: { id },
@@ -40,14 +41,26 @@ export const AppMapList = defineComponent(
     };
     
     const handleListItemBlur = () => {
-      editingId.value = null;
+      selectedId.value = null;
     };
     
     const handleListClick = () => {
-      editingId.value = null;
+      selectedId.value = null;
     };
     
     
-    return { handleListClick, handleListItemBlur, handleMapContextMenu, editingId, mapList, handleNewMap, handleMapClick }
-  }, {},
+    
+    return {
+      handleListClick,
+      handleListItemBlur,
+      handleMapSelect,
+      handleMapEdit,
+      selectedId: computed(() => selectedId.value),
+      mapList,
+      handleNewMap,
+      handleMapClick
+    }
+  }, {
+    components: { 'app-map-list-item': AppMapListItem }
+  },
 )

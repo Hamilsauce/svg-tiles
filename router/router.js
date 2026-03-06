@@ -2,7 +2,7 @@ import { computed, watch } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { AppBody } from '../ui/app-shell/AppBody.js';
 import { AppCreateMapView } from '../ui/views/AppCreateMapView.js'
-import { AppMapList } from '../ui/views/AppMapList.js'
+import { AppMapList } from '../ui/app-map-list/AppMapList.js'
 import { AppMapProps } from '../ui/views/AppMapProps.js'
 import { useMapStore } from '../store/map.store.js';
 

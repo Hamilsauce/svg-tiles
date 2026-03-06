@@ -1,11 +1,14 @@
 import { ref, computed, watch } from 'vue'
 import { defineComponent, getTemplate } from '../../lib/vue-helpers.js';
 import { router, route, RouteName } from '../../router/router.js'
+
 import { useMapStore } from '../../store/map.store.js';
 
 export const AppHeader = defineComponent(
   getTemplate('app-header'),
   (props, ctx) => {
+    // console.warn(ctx)
+
     const mapStore = useMapStore();
     const mapState = mapStore.mapState
     const mapNameRef = ref('mapName');

@@ -45,8 +45,8 @@
     width: 100%;
     max-width: 340px;
     min-width: 300px;
-    
-    li {
+
+    .map-list-item {
       display: grid;
       grid-template-rows: 1px auto;
       grid-template-columns: 1fr 1fr;
@@ -73,7 +73,7 @@
       
     }
     
-    li.editing {
+    .map-list-item.editing {
       grid-template:
         "n a e"
         "u d e";

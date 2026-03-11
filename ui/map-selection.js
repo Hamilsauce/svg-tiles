@@ -46,40 +46,28 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
     }
     
     svgCanvas.layers.tile.append(
-      svgCanvas.createRect({
-        width: 1,
-        height: 1,
-        classList: ['tile'],
-        
-        dataset: {
-          tileType,
-          x,
-          y,
-          current: false,
-          active: false,
-          isPathNode: false,
-        },
+      svgCanvas.createTile({
+        tileType,
+        x,
+        y,
+        current: false,
+        active: false,
+        isPathNode: false,
       }));
+    
   });
   
   Object.entries((mapData.linkedMaps)).forEach(([dir, linkedMap], i) => {
     const { x, y } = getLinkCoords(dir, { width: graph.width, height: graph.height })
-    
     svgCanvas.layers.tile.append(
-      svgCanvas.createRect({
-        width: 1,
-        height: 1,
-        classList: ['tile'],
-        
-        dataset: {
-          linkedMap,
-          tileType: 'map-link',
-          x,
-          y,
-          current: false,
-          active: false,
-          isPathNode: false,
-        },
+      svgCanvas.createTile({
+        linkedMap,
+        tileType: 'map-link',
+        x,
+        y,
+        current: false,
+        active: false,
+        isPathNode: false,
       }));
     
     if (mapStore.previousMapId.value === linkedMap) {
@@ -105,7 +93,6 @@ export const initMapControls = async (graph, svgCanvas, actor1, selectionBox) =>
   
   const blankOpt = { id: null, name: '' };
   const defaultOpt = { id: '', name: '' };
-  
   
   saveButton.addEventListener('click', async (e) => {
     e.preventDefault();

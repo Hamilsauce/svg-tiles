@@ -60,7 +60,7 @@ export class CanvasObject extends EventEmitter {
   rotateTo() {}
   
   scaleTo(x, y) {
-    this.transforms.translateTo(x, y);
+    this.transforms.scaleTo(x, y);
   }
   
   remove() {

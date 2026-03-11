@@ -171,6 +171,29 @@ export class SVGCanvas extends EventTarget {
     }
   }
   
+  createTile({ x, y, tileType, linkedMap }) {
+    const t = this.useTemplate('tile', {
+      dataset: {
+        tileType,
+        x,
+        y,
+        current: false,
+        active: false,
+        isPathNode: false,
+      },
+    });
+    
+    if (linkedMap) {
+      t.dataset.linkedMap = linkedMap;
+    }
+    
+    t.setAttribute('transform', `translate(${x},${y})`);
+    
+    t.id = 'rect' + utils.uuid();
+    
+    return t;
+  }
+  
   createRect({ classList, width, height, x, y, textContent, dataset }) {
     const g = document.createElementNS(SVG_NS, 'g');
     const r = document.createElementNS(SVG_NS, 'rect');

@@ -62,9 +62,7 @@ const defaultContextMenuItems = [
 
 export class ContextMenu extends CanvasObject {
   #menuList = null;
-  
   #menuItems = [];
-  
   
   constructor(ctx, menuItems = defaultContextMenuItems) {
     super(ctx, 'context-menu', { transforms: contextMenuTransforms });

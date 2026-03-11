@@ -345,7 +345,7 @@ export const runCanvas = async () => {
       
       let intervalHandle = setInterval(async () => {
         curr = bfsPath[pointer];
-
+        
         if (audioNote1 && getNextPreVelIndex()) {
           audioNote1
             .at(audioEngine.currentTime + 0.33)
@@ -520,7 +520,7 @@ export const runCanvas = async () => {
       blurContextMenu(e);
       return;
     }
-    
+   
     const tileType = targ.dataset.tileType;
     
     if (tileType === 'teleport') {

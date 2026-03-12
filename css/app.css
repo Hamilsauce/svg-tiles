@@ -110,12 +110,13 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   gap: 0px;
-  overflow: auto;
+  overflow: hidden;
   touch-action: none;
   /* filter: invert(1); */
-  /* filter: brightness(1.2); */ /* hue-rotate(45deg) */;
+  /* filter: brightness(1.2); */
+  /* hue-rotate(45deg) */
   /* filter: hue-rotate(80deg) contrast(1.2) saturate(1.2); */
-
+  
 }
 
 #app-footer {

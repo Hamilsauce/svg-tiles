@@ -47,7 +47,7 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
     
     svgCanvas.layers.tile.append(
       svgCanvas.createTile({
-        tileType,
+        tileType: mapStore.previousMapId.value && tileType === 'start' ? 'empty' : tileType,
         x,
         y,
         current: false,
@@ -57,22 +57,27 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
     
   });
   
+  
+  
   Object.entries((mapData.linkedMaps)).forEach(([dir, linkedMap], i) => {
     const { x, y } = getLinkCoords(dir, { width: graph.width, height: graph.height })
+    
     svgCanvas.layers.tile.append(
       svgCanvas.createTile({
         linkedMap,
-        tileType: 'map-link',
+        tileType: linkedMap === mapStore.previousMapId.value ? 'start' : 'map-link',
         x,
         y,
         current: false,
         active: false,
         isPathNode: false,
+        
       }));
     
     if (mapStore.previousMapId.value === linkedMap) {
       actor1.setAttribute('transform', `translate(${x},${y})`);
     }
+    
   })
 };
 

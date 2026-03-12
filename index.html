@@ -165,7 +165,7 @@
             <path d="M 0 0 L 10 5 L 0 10 z" _fill="#00000090" />
           </marker>
           
-          <g data-template="context-menu" id="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
+          <g data-template="context-menu" class="context-menu-container" pointer-events="auto" data-show-actions="false" data-show="false" transform="translate(0,0) rotate(0) scale(0.05)">
             <foreignObject class="context-menu-foreignobject" pointer-events="auto" x="0" y="0" width="200" height="30" _transform="translate(0,0) rotate(0) scale(1)">
               <div xmlns="http://www.w3.org/1999/xhtml" class="context-menu" data-show-actions="false">
                 <ul class="context-menu-list">
@@ -200,8 +200,8 @@
             <rect id="surface" x="-100" y="-100" rx="0" ry="0" width="200" height="200"></rect>
             <line class="axis-line" x1="-100" y1="0" x2="100" y2="0" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
             <line class="axis-line" x1="0" y1="-100" x2="0" y2="100" _marker-end="url(#edge-line-arrow)" transform="translate(0,0) rotate(0) scale(1)" />
-            <g id="map-name" transform="translate(5,-2) rotate(0) scale(0.1)">
-              <text id="map-name-text" style="fill:#FFFFFF;fill-opacity:1;stroke:#00000090;stroke-width:0.3;stroke-opacity:1;stroke-linecap:butt;stroke-miterlimit:4;stroke-dashoffset:0;" font-style="normal" text-align="left">
+            <g id="map-name" transform="translate(0,-3) rotate(0) scale(0.1)">
+              <text id="map-name-text" _dominant-baseline="hanging" _text-anchor="middle">
                 {{ map.name }}
               </text>
             </g>

@@ -12,16 +12,6 @@ import { getScaleNotes, getChordNotes, pitchToFrequency } from './MUSIC_THEORY_F
 import { ContextMenu } from './canvas/ContextMenu.js';
 
 
-// setTimeout(() => {
-//   const canvasEl = document.querySelector('#canvas');
-
-//   setInterval(() => {
-//     console.warn('toggle', canvasEl.className)
-//     canvasEl.classList.toggle('bg-blend-overlay')
-//   }, 1000)
-// }, 2000)
-
-
 const { addDragAction, sleep, template, utils, download, TwoWayMap } = ham;
 const { fromEvent } = rxjs;
 const { tap } = rxjs.operators;
@@ -520,7 +510,7 @@ export const runCanvas = async () => {
       blurContextMenu(e);
       return;
     }
-   
+    
     const tileType = targ.dataset.tileType;
     
     if (tileType === 'teleport') {
@@ -705,7 +695,6 @@ export const runCanvas = async () => {
     
     graph.getRange(range, (tile) => tile.selected = true);
     
-    contextMenu.translateTo(start.x, start.y - 2);
-    contextMenu.show();
+    contextMenu.update({ x: start.x, y: start.y - 2 }).show();
   });
 };

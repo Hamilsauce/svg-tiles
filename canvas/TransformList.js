@@ -21,24 +21,21 @@ const TransformMatrixMap = {
   f: 'ty',
 }
 
-const DEFAULT_TRANSFORMS = {
-  transforms: [
-  {
-    type: 'translate',
-    values: [0, 0],
-    position: 0,
-  },
-  {
-    type: 'rotate',
-    values: [0, 0, 0],
-    position: 1,
-  },
-  {
-    type: 'scale',
-    values: [1, 1],
-    position: 2,
-  }, ]
-};
+const DEFAULT_TRANSFORMS = [{
+  type: 'translate',
+  values: [0, 0],
+  position: 0,
+},
+{
+  type: 'rotate',
+  values: [0, 0, 0],
+  position: 1,
+},
+{
+  type: 'scale',
+  values: [1, 1],
+  position: 2,
+}];
 
 const transformTypeMap = new Map([
   ['translate', SVGTransform.SVG_TRANSFORM_TRANSLATE],
@@ -51,7 +48,7 @@ export class TransformList {
   #canvas = null;
   #transforms = null;
   
-  constructor(svgCanvas, element, { transforms } = DEFAULT_TRANSFORMS) {
+  constructor(svgCanvas, element, transforms = DEFAULT_TRANSFORMS) {
     this.#canvas = svgCanvas;
     this.#self = (element.dom ?? element).transform.baseVal;
     this.init(transforms);

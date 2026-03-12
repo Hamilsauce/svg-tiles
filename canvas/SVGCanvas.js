@@ -35,7 +35,7 @@ export class SVGCanvas extends EventTarget {
       this.#isContextMenuActive = true;
       
       this.dom.addEventListener('click', this.toggleScroll);
-      document.querySelector('#context-menu-container').addEventListener('click', this.toggleScroll);
+      document.querySelector('.context-menu-container').addEventListener('click', this.toggleScroll);
       
     });
     let shouldInvert = 0;
@@ -56,7 +56,6 @@ export class SVGCanvas extends EventTarget {
     
     getPanZoom(this.dom);
     this.hueRotato();
-    // const { width: mmWidth, height: mmHeight } = this.minimap.getBoundingClientRect();
     
     this.clickDOM$ = fromEvent(this.#self, 'click').pipe(
       tap(e => {

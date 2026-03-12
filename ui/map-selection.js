@@ -71,14 +71,14 @@ const renderMap = (mapData, svgCanvas, graph, actor1, selectionBox) => {
         current: false,
         active: false,
         isPathNode: false,
-        
       }));
     
     if (mapStore.previousMapId.value === linkedMap) {
       actor1.setAttribute('transform', `translate(${x},${y})`);
     }
-    
   })
+
+  svgCanvas.layers.surface.setAttribute('transform', `translate(${Math.floor((graph.width+2)/2)-0.3}, ${Math.floor((graph.height+2)/2)-0.25})`)
 };
 
 
